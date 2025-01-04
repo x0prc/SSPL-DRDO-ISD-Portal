@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #001f3f, #0074D9); 
+    color: white; 
+}
+
+h1, h2 {
+    text-align: center; 
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+input, button, textarea {
+    margin: 10px; 
+    padding: 10px; 
+    border-radius: 5px; 
+    border: none; 
+}
+
+button {
+    background-color: #0074D9; 
+    color: white; 
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3; 
+}
+
+

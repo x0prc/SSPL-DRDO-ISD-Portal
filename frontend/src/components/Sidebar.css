@@ -1,0 +1,34 @@
+.sidebar {
+    height: 100%;
+    width: 250px; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    background-color: #001f3f; 
+    padding: 20px; 
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5); 
+    z-index: 1000; 
+}
+
+.sidebar h2 {
+    color: white; 
+}
+
+.sidebar ul {
+    list-style-type: none; 
+    padding: 0; 
+}
+
+.sidebar ul li {
+    margin: 15px 0; 
+}
+
+.sidebar ul li a {
+    color: white; 
+    text-decoration: none; 
+    font-size: 18px; 
+}
+
+.sidebar ul li a:hover {
+    text-decoration: underline; 
+}
