@@ -3,10 +3,33 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #003366;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1500;
+}
+
+.top-bar-logo {
+    height: 70px;
+    margin-left: 10px;
+}
+
+.top-bar-text {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 50px;
+    display: flex;
+    align-items: center;
 }
 
 .container {
@@ -15,10 +38,12 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    margin: 300px auto 0 auto;
 }
 
 .form-container {
     padding: 20px;
+    margin-bottom: 10px;
 }
 
 h2 {
@@ -67,6 +92,7 @@ button {
 button:hover {
     background-color: #00509e;
 }
+
 p {
     text-align: center;
     font-size: 14px;
