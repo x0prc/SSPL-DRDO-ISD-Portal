@@ -4,6 +4,8 @@ import { useHistory } from 'react-router-dom';
 const InternshipForm = () => {
     const [formData, setFormData] = useState({
         name: '',
+        rollNumber: '',
+        regID:'',
         email: '',
         phone: '',
         institute: '',
@@ -32,12 +34,18 @@ const InternshipForm = () => {
         <div className="container">
             <div className="form-container">
                 <h2>SIT Data Form</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}/>
                     <label>Name</label>
                     <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-                    
+
+                    <label>rollNumber</label>
+                    <input type="text" name="rollNumber" value={formData.rollNumber} onChange={handleChange} required />
+
                     <label>Email</label>
                     <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                    
+                    <label>regID</label>
+                    <input type="text" name="regID" value={formData.regID} onChange={handleChange} required />
                     
                     <label>Phone</label>
                     <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required />
@@ -49,7 +57,7 @@ const InternshipForm = () => {
                     <input type="date" name="dob" value={formData.dob} onChange={handleChange} required />
                     
                     <label>Gender</label>
-                    <select name="gender" value={formData.gender} onChange={handleChange} required>
+                    <select name="gender" value={formData.gender} onChange={handleChange} required/>
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>

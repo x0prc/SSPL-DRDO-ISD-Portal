@@ -7,23 +7,24 @@ import ResultsPage from './components/ResultsPage';
 import Update from './components/Update';
 import Logout from './components/Logout';
 import Sidebar from './components/Sidebar'; 
+import CertificateGenerator from './components/CertificateGenerator'; 
 import './App.css'; 
 
 function App() {
-   return (
-      <Router>
-         <Sidebar />
-         <div style={{ marginLeft:'260px', padding:'20px' }}> {}
-            <Route path="/" exact component={Login} />
-            <Route path="/form" component={InternshipForm} />
-            <Route path="/review" component={ReviewPage} />
-            <Route path="/results" component={ResultsPage} />
-            <Route path="/update" component={Update} />
-            <Route path="/logout" component={Logout} />
-         </div>
-      </Router>
-   );
+    return (
+        <Router>
+            <Sidebar />
+            <div style={{ marginLeft: '260px', padding: '20px' }}>
+                <Route path="/" exact component={Login} />
+                <Route path="/form" component={InternshipForm} />
+                <Route path="/review" component={ReviewPage} />
+                <Route path="/results" component={ResultsPage} />
+                <Route path="/update" component={Update} />
+                <Route path="/logout" component={Logout} />
+                <Route path="/generate-certificate" component={CertificateGenerator} /> {/* New route */}
+            </div>
+        </Router>
+    );
 }
 
 export default App;
-
