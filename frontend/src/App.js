@@ -9,6 +9,7 @@ import Logout from './components/Logout';
 import Sidebar from './components/Sidebar'; 
 import CertificateGenerator from './components/CertificateGenerator'; 
 import './App.css'; 
+import '/public/style.css';
 
 function App() {
     return (

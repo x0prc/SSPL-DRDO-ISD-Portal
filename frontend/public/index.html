@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/public/style.css"> 
     <title>Admin Portal</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- Top Bar -->
     <div class="top-bar">
         <img src="drdo_logo.png" alt="Logo" class="top-bar-logo">
-         <div class="top-bar-text">
+        <div class="top-bar-text">
             ठोसअवस्था भौतिकी प्रयोगशाला <br> Solid State Physics Laboratory
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="form-container">
             <!-- Login Form -->
             <div class="form" id="loginForm">
-                <h2> SIT Portal Login </h2>
+                <h2>SIT Portal Login</h2>
                 <form action="/admin/login" method="post">
                     <label for="login-username">Username</label>
                     <input type="text" id="login-username" name="username" placeholder="Enter your username" required>
