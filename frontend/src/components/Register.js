@@ -1,31 +1,35 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
+import React, { useState } from 'react';
+import axios from 'axios';
 
-// Register Route
-router.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+const Register = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
-    // Validate input
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
-    }
-
-    try {
-        // Check if user already exists
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ message: 'Username already exists' });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('/api/users/register', { username, password });
+            alert("Registration successful! You can now log in.");
+        } catch (error) {
+            alert("Registration failed: " + error.response.data);
         }
+    };
 
-        // Create new user
-        const newUser = new User({ username, password });
-        await newUser.save();
+    return (
+        <div className="form-container">
+            <h2>Create Admin Account</h2>
+            <form onSubmit={handleSubmit}>
+                <label>Username</label>
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
 
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error registering user', error });
-    }
-});
+                <label>Password</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-module.exports = router;
+                <button type="submit">Create Account</button>
+            </form>
+            <p>Already have an account? <a href="/">Login</a></p>
+        </div>
+    );
+};
+
+export default Register;

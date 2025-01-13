@@ -1,16 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import App from './App';
-import './frontend/public/index.html'
-import '/frontend/public/style.css'; 
+import './App.css'; // Import global styles
 
-const authRoutes = require('./routes/auth');
-app.use('/auth', authRoutes);
-
-
-ReactDOM.render(
-   <React.StrictMode>
-      <App />
-   </React.StrictMode>,
-   document.getElementById('root')
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
 );

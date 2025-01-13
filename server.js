@@ -4,12 +4,22 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const path = require('path'); 
+const path = require('path');
 dotenv.config();
 
 const app = express();
-app.use(cors());
-app.use(express.json()); 
+
+// Middleware
+app.use(cors({
+    origin: 'http://localhost:5500', 
+    credentials: true
+}));app.use(express.json());
+
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, 'frontend/public')));
+// Serve static files from the public directory
+// Specifically serve CSS files
+app.use('/css', express.static(path.join(__dirname, 'frontend/public')));
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
@@ -48,92 +58,108 @@ const InternshipSchema = new mongoose.Schema({
 
 const Internship = mongoose.model('Internship', InternshipSchema);
 
+// Authentication middleware
 const authenticateToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) return res.sendStatus(401); // Unauthorized
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Handle "Bearer" token format
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403); // Forbidden
-        req.user = user;
+    if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
+
+    try {
+        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = verified;
         next();
-    });
+    } catch (err) {
+        res.status(403).json({ error: 'Invalid token.' });
+    }
 };
 
-app.use(express.static(path.join(__dirname, 'frontend/public/style.css')));
-
-// Routes
-
-app.get('/', (req, res) => {
-   res.sendFile(path.join(__dirname, 'frontend/public/index.html'));
-});
-
-// Register a new user
-app.post('/admin/register', async (req, res) => {
-    const { username, password } = req.body;
-    
+// API Routes
+app.post('/components/LoginPage', async (req, res) => {
     try {
+        const { username, password } = req.body;
+        
+        // Check if user already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({ username, password: hashedPassword });
         await newUser.save();
-        res.status(201).send("User registered successfully");
+        
+        res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
-        res.status(400).send("Error registering user");
+        console.error('Registration error:', error);
+        res.status(500).json({ error: "Error registering user" });
     }
 });
 
-// Login route
-app.post('/admin/login', async (req, res) => {
-    const { username, password } = req.body;
-    
-    const user = await User.findOne({ username });
-    
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).send("Invalid username or password");
-    }
-    
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ token });
-});
-
-// Submit internship application
-app.post('/api/internships', authenticateToken, async (req, res) => {
-    const internshipData = req.body;
-
+app.post('/components/LoginPage', async (req, res) => {
     try {
-        const internshipApplication = new Internship(internshipData);
-        await internshipApplication.save();
-        res.status(201).send("Internship application submitted successfully");
+        const { username, password } = req.body;
+        const user = await User.findOne({ username });
+        
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({ error: "Invalid username or password" });
+        }
+        
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        res.json({ token, username: user.username });
     } catch (error) {
-        res.status(400).send("Error submitting application");
+        console.error('Login error:', error);
+        res.status(500).json({ error: "Error during login" });
     }
 });
 
-// Get all internship applications (protected)
+app.post('/api/internships', authenticateToken, async (req, res) => {
+    try {
+        const internshipApplication = new Internship(req.body);
+        await internshipApplication.save();
+        res.status(201).json({ message: "Internship application submitted successfully" });
+    } catch (error) {
+        console.error('Submission error:', error);
+        res.status(500).json({ error: "Error submitting application" });
+    }
+});
+
 app.get('/api/internships', authenticateToken, async (req, res) => {
     try {
-        const internships = await Internship.find();
+        const internships = await Internship.find().sort({ _id: -1 });
         res.json(internships);
     } catch (error) {
-        res.status(500).send("Error retrieving applications");
+        console.error('Retrieval error:', error);
+        res.status(500).json({ error: "Error retrieving applications" });
     }
 });
 
-// Update internship application status
 app.put('/api/internships/:id', authenticateToken, async (req, res) => {
-    const { id } = req.params;
-    
     try {
-        const updatedInternship = await Internship.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedInternship) return res.status(404).send("Internship not found");
+        const { id } = req.params;
+        const updatedInternship = await Internship.findByIdAndUpdate(
+            id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        
+        if (!updatedInternship) {
+            return res.status(404).json({ error: "Internship not found" });
+        }
         
         res.json(updatedInternship);
     } catch (error) {
-        res.status(400).send("Error updating application");
+        console.error('Update error:', error);
+        res.status(500).json({ error: "Error updating application" });
     }
 });
 
-// Start the server
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
 const PORT = process.env.PORT || 5500;
 app.listen(PORT, () => {
-   console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });

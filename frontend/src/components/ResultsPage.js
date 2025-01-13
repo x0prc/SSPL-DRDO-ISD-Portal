@@ -23,7 +23,7 @@ const Results = () => {
     }, []);
 
     const handleSelect = (studentId) => {
-        history.push(`/update/${studentId}`); // Redirect to Update Form with student ID
+        history.push(`/update/${studentId}`); 
     };
 
     return (
@@ -59,4 +59,4 @@ const Results = () => {
     );
 };
 
-export default Results;
+export default ResultsPage;
