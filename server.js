@@ -75,7 +75,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // API Routes
-app.post('/components/LoginPage', async (req, res) => {
+app.post('/components/Register', async (req, res) => {
     try {
         const { username, password } = req.body;
         

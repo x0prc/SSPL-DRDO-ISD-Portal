@@ -19,15 +19,14 @@
             <!-- Login Form -->
             <div class="form" id="loginForm">
                 <h2>SIT Portal Login</h2>
-                <form id="login" action="/admin/login" method="post">
+                <form id="login" action="\components\LoginPage" method="post">
                     <label for="login-username">Username</label>
                     <input type="text" id="login-username" name="username" placeholder="Enter your username" required>
 
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
 
-                    <input type="button" onclick="location.href='/components/LoginPage.js';" value="Login" />
-
+                    <button type="submit">Login</button>
                 </form>
                 <p>Don't have an account? <a href="#" onclick="showRegister()">Create Account</a></p>
             </div>
@@ -35,7 +34,7 @@
             <!-- Register Form -->
             <div class="form hidden" id="registerForm">
                 <h2>Create Admin Account</h2>
-                <form id="register" action="/admin/register" method="post">
+                <form id="register" action="\components\Register" method="post">
                     <label for="register-username">Username</label>
                     <input type="text" id="register-username" name="username" placeholder="Choose a username" required>
 
