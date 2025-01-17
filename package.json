@@ -18,21 +18,19 @@
   "author": "Parth, Jay and Sonal",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.x",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.13.23",
-    "react-scripts": "^5.0.1"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "mssql": "^11.0.1",
+    "mysql2": "^3.12.0",
+    "react-router-dom": "^6.x",
+    "sequelize": "^6.37.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.0",
-    "react-router-dom": "^6.x",
-    "axios": "^1.x"
   }
 }
