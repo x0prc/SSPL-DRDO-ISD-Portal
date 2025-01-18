@@ -38,7 +38,7 @@ sql.connect(dbConfig)
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Handle "Bearer" token format
+    const token = authHeader && authHeader.split(' ')[1]; 
 
     if (!token) return res.status(401).json({ error: 'Access denied. No token provided.' });
 
@@ -48,6 +48,37 @@ const authenticateToken = (req, res, next) => {
         next();
     });
 };
+// User login route
+app.post('/components/LoginPage', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const request = new sql.Request();
+        
+        console.log(`Attempting to log in with username: ${username}`);
+        
+        const result = await request.query(`SELECT * FROM Users WHERE Username='${username}'`);
+        console.log(result);
+
+        if (result.recordset.length === 0) {
+            return res.status(401).json({ error: "Invalid username or password" });
+        }
+
+        const user = result.recordset[0];
+        
+        // Check password
+        const isPasswordValid = await bcrypt.compare(password, user.Password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Invalid username or password" });
+        }
+
+        const token = jwt.sign({ id: user.UserID }, process.env.JWT_SECRET, { expiresIn: '24h' });
+        res.json({ token, username });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: "Error during login" });
+    }
+});
+
 
 // User registration route
 app.post('/components/Register', async (req, res) => {
