@@ -8,7 +8,7 @@ import Update from './components/Update';
 import Logout from './components/Logout';
 import Sidebar from './components/Sidebar';
 import CertificateGenerator from './components/CertificateGenerator';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';  // Ensure this is set to handle authentication logic
 import './App.css';
 import './style.css';
 
@@ -17,13 +17,16 @@ function App() {
         <Router>
             <div className="app-container">
                 <Routes>
+                    {/* Redirect root ("/") to the login page */}
                     <Route path="/" element={<Navigate to="/login" replace />} />
+
+                    {/* Login route */}
                     <Route path="/login" element={<Login />} />
-                    
+
                     {/* Protected Routes */}
                     <Route element={<ProtectedRoute />}>
-                        <Route 
-                            path="/dashboard" 
+                        {/* Sidebar and main content will only render for authenticated users */}
+                        <Route path="/internship-form" 
                             element={
                                 <>
                                     <Sidebar />
@@ -39,6 +42,9 @@ function App() {
                         <Route path="/certificate" element={<CertificateGenerator />} />
                         <Route path="/logout" element={<Logout />} />
                     </Route>
+
+                    {/* Catch-all route for invalid paths */}
+                    <Route path="*" element={<Navigate to="/login" replace />} />
                 </Routes>
             </div>
         </Router>
@@ -46,46 +52,3 @@ function App() {
 }
 
 export default App;
-
-import { Navigate, Outlet } from 'react-router-dom';
-
-const ProtectedRoute = () => {
-    const token = localStorage.getItem('token');
-    return token ? <Outlet /> : <Navigate to="/login" replace />;
-};
-
-export default ProtectedRoute;
-
-const LoginPage = () => {
-    const navigate = useNavigate();
-    const [credentials, setCredentials] = useState({ username: '', password: '' });
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError('');
-
-        try {
-            const response = await fetch('/api/users/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('username', data.username);
-                navigate('/dashboard');
-            } else {
-                setError(data.message || 'Login failed');
-            }
-        } catch (error) {
-            setError('Network error occurred');
-        } finally {
-            setIsLoading(false);
-        }
-    };

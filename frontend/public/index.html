@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div class="top-bar">
@@ -19,12 +19,12 @@
             <!-- Login Form -->
             <div class="form" id="loginForm">
                 <h2>SIT Portal Login</h2>
-                <form id="login" action="\components\LoginPage" method="post">
+                <form id="login" method="post" onsubmit="handleLogin(event)">
                     <label for="login-username">Username</label>
-                    <input type="text" id="login-username" name="username" placeholder="Enter your username" required>
+                    <input type="text" id="login-username" name="username" placeholder="Enter your username" required autocomplete="off">
 
                     <label for="login-password">Password</label>
-                    <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="login-password" name="password" placeholder="Enter your password" required autocomplete="off">
 
                     <button type="submit">Login</button>
                 </form>
@@ -34,15 +34,15 @@
             <!-- Register Form -->
             <div class="form hidden" id="registerForm">
                 <h2>Create Admin Account</h2>
-                <form id="register" action="\components\Register" method="post">
+                <form id="register" method="post" onsubmit="handleRegister(event)">
                     <label for="register-username">Username</label>
-                    <input type="text" id="register-username" name="username" placeholder="Choose a username" required>
+                    <input type="text" id="register-username" name="username" placeholder="Choose a username" required autocomplete="off">
 
                     <label for="register-email">Email</label>
-                    <input type="email" id="register-email" name="email" placeholder="Enter your email" required>
+                    <input type="email" id="register-email" name="email" placeholder="Enter your email" required autocomplete="off">
 
                     <label for="register-password">Password</label>
-                    <input type="password" id="register-password" name="password" placeholder="Choose a password" required>
+                    <input type="password" id="register-password" name="password" placeholder="Choose a password" required autocomplete="off">
 
                     <button type="submit">Create Account</button>
                 </form>
@@ -51,6 +51,91 @@
         </div>
     </div>
 
-    <script src="script.js"></script> 
+    <script>
+        // Function to handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            // Send POST request to the backend API
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Handle successful login
+                    console.log('Login successful:', data);
+                    alert('Login successful!');
+                    localStorage.setItem('token', data.token);
+                    // Redirect to InternshipForm page after successful login (React Router path)
+                    window.location.replace('/internship-form');  // Use the proper route for the Internship Form
+                } else {
+                    // Show error message if login fails
+                    alert(data.error || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login request error:', error);
+                alert('An error occurred while logging in. Please try again.');
+            }
+        }
+
+        // Function to handle registration form submission
+        async function handleRegister(event) {
+            event.preventDefault();  // Prevent default form submission
+
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const email = document.getElementById('register-email').value;
+
+            if (!username || !password || !email) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password, email }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Account created successfully!');
+                    showLogin();  // Switch to login form after successful registration
+                } else {
+                    alert(data.error || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration request error:', error);
+                alert('An error occurred while registering. Please try again.');
+            }
+        }
+
+        // Function to switch to the registration form
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        // Function to switch to the login form
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
