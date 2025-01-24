@@ -1,22 +1,18 @@
-const mongoose = require('mongoose');
+const db = require('../config/db');
 
-const InternshipSchema = new mongoose.Schema({
-    name: { type: String },
-    email: { type: String },
-    phone: { type: String },
-    institute: { type: String },
-    dob: { type: Date },
-    gender: { type: String },
-    state: { type: String },
-    aadhar: { type: String },
-    branch: { type: String },
-    topic: { type: String },
-    periodOfTraining: { type: String },
-    emailSentDate: { type: Date },
-    joined: { type: Boolean, default: false },
-    joiningDate: { type: Date },
-    relievingDate: { type: Date },
-    supervisingScientist: { type: String },
-});
+const Internship = {
+    create: (data, callback) => {
+        const sql = 'INSERT INTO internships (userId, title, description) VALUES (?, ?, ?)';
+        db.query(sql, [data.userId, data.title, data.description], callback);
+    },
+    findAll: (userId, callback) => {
+        const sql = 'SELECT * FROM internships WHERE userId = ?';
+        db.query(sql, [userId], callback);
+    },
+    update: (id, data, callback) => {
+        const sql = 'UPDATE internships SET title = ?, description = ? WHERE id = ?';
+        db.query(sql, [data.title, data.description, id], callback);
+    }
+};
 
-module.exports = mongoose.model('Internship', InternshipSchema);
+module.exports = Internship;

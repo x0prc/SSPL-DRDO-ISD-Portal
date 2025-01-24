@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const [credentials, setCredentials] = useState({ username: '', password: '' });
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -18,15 +17,8 @@ const LoginPage = () => {
         setIsLoading(true);
         setMessage('');
 
-        // Check for empty fields
-        if (!credentials.username || !credentials.password) {
-            setMessage('Please fill in both username and password');
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const response = await fetch('/api/login', {
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(credentials),
@@ -35,20 +27,19 @@ const LoginPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Store the token and username in localStorage
+                // Store the token in localStorage
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
                 setMessage('Login successful!');
-
-                // Redirect to the route the user tried to access or the default route
-                const redirectTo = location.state?.from || '/internship-form'; // Default route
-                navigate(redirectTo, { replace: true });
+                
+                // Redirect to internship form page
+                navigate('/internshipForm'); // Ensure this path is correct
             } else {
                 setMessage(data.error || 'Invalid credentials');
             }
         } catch (error) {
             console.error('Login error:', error);
-            setMessage('Error connecting to the server. Please try again.');
+            setMessage('Error connecting to the server');
         } finally {
             setIsLoading(false);
         }

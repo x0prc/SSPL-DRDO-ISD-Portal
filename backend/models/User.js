@@ -1,15 +1,14 @@
-const mongoose = require('mongoose');
+const db = require('../config/db');
 
-const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
+const User = {
+    create: (username, password, callback) => {
+        const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
+        db.query(sql, [username, password], callback);
     },
-    password: {
-        type: String,
-        required: true,
-    },
-});
+    findByUsername: (username, callback) => {
+        const sql = 'SELECT * FROM users WHERE username = ?';
+        db.query(sql, [username], callback);
+    }
+};
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = User;

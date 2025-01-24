@@ -8,7 +8,7 @@ import Update from './components/Update';
 import Logout from './components/Logout';
 import Sidebar from './components/Sidebar';
 import CertificateGenerator from './components/CertificateGenerator';
-import ProtectedRoute from './components/ProtectedRoute';  // Ensure this is set to handle authentication logic
+import ProtectedRoute from './components/ProtectedRoute'; // Ensure this handles authentication logic
 import './App.css';
 import './style.css';
 
@@ -26,7 +26,8 @@ function App() {
                     {/* Protected Routes */}
                     <Route element={<ProtectedRoute />}>
                         {/* Sidebar and main content will only render for authenticated users */}
-                        <Route path="/internship-form" 
+                        <Route
+                            path="/components/internshipform"
                             element={
                                 <>
                                     <Sidebar />
@@ -34,7 +35,7 @@ function App() {
                                         <InternshipForm />
                                     </div>
                                 </>
-                            } 
+                            }
                         />
                         <Route path="/preview" element={<PreviewPage />} />
                         <Route path="/results" element={<ResultsPage />} />

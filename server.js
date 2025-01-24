@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5500', credentials: true }));
+app.use(cors({ origin: 'http://localhost:5500', credentials: true })); // Adjust origin to match your frontend port
 app.use(express.json()); // Parse JSON bodies
 
 // MySQL Configuration
@@ -21,7 +21,7 @@ const dbConfig = {
   user: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'sit-portal',
-  port: process.env.DB_PORT || 3306,  // Default MySQL port
+  port: process.env.DB_PORT || 3306, // Default MySQL port
 };
 
 // Create MySQL Connection Pool
@@ -54,7 +54,7 @@ const authenticateToken = (req, res, next) => {
 // Routes
 
 // User Login Route
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     pool.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
@@ -73,7 +73,7 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ error: "Invalid username or password" });
       }
 
-      const token = jwt.sign({ id: user.UserID }, process.env.JWT_SECRET, { expiresIn: '24h' });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
       res.json({ token, username });
     });
   } catch (error) {
@@ -83,7 +83,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // User Registration Route
-app.post('/api/register', async (req, res) => {
+app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
     pool.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
@@ -111,7 +111,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// Serve Frontend
+// Serve Frontend Static Files
 app.use(express.static(path.join(__dirname, 'frontend/public')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/public', 'index.html'));
