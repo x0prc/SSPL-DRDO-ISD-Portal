@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5500', credentials: true })); // Adjust origin to match your frontend port
+app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Adjust origin to match your frontend port
 app.use(express.json()); // Parse JSON bodies
 
 // MySQL Configuration
@@ -118,7 +118,7 @@ app.get('*', (req, res) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
