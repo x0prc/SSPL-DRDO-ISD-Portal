@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIT Data Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+    <div class="top-bar">
+        <img src="drdo_logo.png" alt="Logo" class="top-bar-logo">
+        <div class="top-bar-text">
+            ठोसअवस्था भौतिकी प्रयोगशाला <br> Solid State Physics Laboratory
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/index.html">
+                                <i class="bi bi-house-door"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/generatecertificate.html">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Generate Certificate
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/results.html">
+                                <i class="bi bi-pencil-square"></i>
+                                Update
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/frontend/public/results.html">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Results
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/index.html">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="resultscontainer mx-auto px-4 py-5">
+                    <h2 class="text-2xl font-bold mb-6">SIT Data Results</h2>
+
+                    <!-- Filter Dropdowns -->
+                    <div class="row mb-4">
+                        <div class="col-md-2 mb-2">
+                            <select id="scientistFilter" class="form-select">
+                                <option value="">Scientist Allocated</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select id="instituteFilter" class="form-select">
+                                <option value="">Institute</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select id="branchFilter" class="form-select">
+                                <option value="">Branch</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select id="topicFilter" class="form-select">
+                                <option value="">Topic</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select id="registrationFilter" class="form-select">
+                                <option value="">Registration</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <button id="applyFilters" class="btn btn-primary w-100">Apply Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Roll Number</th>
+                                    <th>Institute</th>
+                                    <th>Branch</th>
+                                    <th>Topic</th>
+                                    <th>Scientist Allocated</th>
+                                    <th>Registration</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- Table rows will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sampleData = [
+            { name: "John Doe", rollNumber: "12345", institute: "IIT Delhi", branch: "Computer Science", topic: "Machine Learning", scientistAllocated: "Dr. Smith", registration: "Yes" },
+            { name: "Jane Smith", rollNumber: "67890", institute: "NIT Trichy", branch: "Electronics", topic: "IoT", scientistAllocated: "Dr. Johnson", registration: "No" },
+            // Add more sample data as needed
+        ];
+
+        // Function to populate the results table
+        function populateResultsTable(data) {
+            const tableBody = document.getElementById('resultsTableBody');
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.rollNumber}</td>
+                    <td>${item.institute}</td>
+                    <td>${item.branch}</td>
+                    <td>${item.topic}</td>
+                    <td>${item.scientistAllocated}</td>
+                    <td>${item.registration}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to populate filter dropdowns
+        function populateFilterDropdowns(data) {
+            const filters = {
+                scientistFilter: new Set(),
+                instituteFilter: new Set(),
+                branchFilter: new Set(),
+                topicFilter: new Set()
+            };
+
+            data.forEach(item => {
+                filters.scientistFilter.add(item.scientistAllocated);
+                filters.instituteFilter.add(item.institute);
+                filters.branchFilter.add(item.branch);
+                filters.topicFilter.add(item.topic);
+            });
+
+            for (const [filterId, values] of Object.entries(filters)) {
+                const select = document.getElementById(filterId);
+                values.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        // Function to apply filters
+        function applyFilters() {
+            const scientist = document.getElementById('scientistFilter').value;
+            const institute = document.getElementById('instituteFilter').value;
+            const branch = document.getElementById('branchFilter').value;
+            const topic = document.getElementById('topicFilter').value;
+            const registration = document.getElementById('registrationFilter').value;
+
+            const filteredData = sampleData.filter(item => 
+                (!scientist || item.scientistAllocated === scientist) &&
+                (!institute || item.institute === institute) &&
+                (!branch || item.branch === branch) &&
+                (!topic || item.topic === topic) &&
+                (!registration || item.registration.toLowerCase() === registration)
+            );
+
+            populateResultsTable(filteredData);
+        }
+
+        // Event listener for apply filters button
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+
+        // Initial population of table and dropdowns
+        document.addEventListener('DOMContentLoaded', () => {
+            populateResultsTable(sampleData);
+            populateFilterDropdowns(sampleData);
+        });
+    </script>
+</body>
+</html>

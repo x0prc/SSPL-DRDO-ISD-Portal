@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Certificates</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+    <div class="top-bar">
+        <img src="drdo_logo.png" alt="Logo" class="top-bar-logo">
+        <div class="top-bar-text">
+            ठोसअवस्था भौतिकी प्रयोगशाला <br> Solid State Physics Laboratory
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+                <div class="position-sticky sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/index.html">
+                                <i class="bi bi-house-door"></i>
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/frontend/public/generatecertificate.html">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Generate Certificate
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/results.html">
+                                <i class="bi bi-pencil-square"></i>
+                                Update
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/results.html">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Results
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/frontend/public/index.html">
+                                <i class="bi bi-box-arrow-right"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="certificatecontainer mx-auto px-4 py-5">
+                    <h2 class="text-2xl font-bold mb-6">Generate Certificates</h2>
+
+                    <!-- Table displaying students -->
+                    <div class="table-responsive">
+                        <table id="studentsTable" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Roll Number</th>
+                                    <th>Institute</th>
+                                    <th>Branch</th>
+                                    <th>Topic</th>
+                                    <th>Duration</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- Rows will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Button to download all certificates -->
+                    <button id="generateAllCertificates" class="btn btn-primary mt-4">Generate All Certificates</button>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript for populating and generating certificates -->
+    <script src="./generateCertificate.js"></script>
+</body>
+</html>
