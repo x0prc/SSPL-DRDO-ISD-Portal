@@ -3,41 +3,35 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mysql = require('mysql2');
+const { Pool } = require('pg');
 const path = require('path');
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Adjust origin to match your frontend port
-app.use(express.json()); // Parse JSON bodies
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(express.json());
 
-// MySQL Configuration
-const dbConfig = {
+// PostgreSQL Connection
+const pool = new Pool({
+  user: process.env.DB_USERNAME || 'postgres',
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USERNAME || 'root',
+  database: process.env.DB_NAME || 'sit_portal',
   password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'sit-portal',
-  port: process.env.DB_PORT || 3306, // Default MySQL port
-};
+  port: process.env.DB_PORT || 5432,
+});
 
-// Create MySQL Connection Pool
-const pool = mysql.createPool(dbConfig);
-
-// Test Database Connection
-pool.getConnection((err, connection) => {
+pool.connect((err) => {
   if (err) {
-    console.error("Database connection error:", err.stack);
+    console.error("Database connection error:", err);
   } else {
-    console.log("Connected to MySQL database");
-    connection.release(); // Release connection back to pool
+    console.log("Connected to PostgreSQL database");
   }
 });
 
-// Authentication Middleware
+// Middleware for Authentication
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -51,31 +45,27 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-// Routes
-
 // User Login Route
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    pool.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-      if (err) {
-        console.error('Error querying database:', err);
-        return res.status(500).json({ error: "Internal server error" });
-      }
 
-      if (results.length === 0) {
-        return res.status(401).json({ error: "Invalid username or password" });
-      }
+    const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
-      const user = results[0];
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(401).json({ error: "Invalid username or password" });
-      }
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
 
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-      res.json({ token, username });
-    });
+    const user = result.rows[0];
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+    res.json({ token, username });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: "Internal server error" });
@@ -86,25 +76,17 @@ app.post('/login', async (req, res) => {
 app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
-    pool.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-      if (err) {
-        console.error('Error querying database:', err);
-        return res.status(500).json({ error: "Internal server error" });
-      }
 
-      if (results.length > 0) {
-        return res.status(400).json({ error: 'Username already exists' });
-      }
+    const userExists = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
-      const hashedPassword = await bcrypt.hash(password, 10);
-      pool.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
-        if (err) {
-          console.error('Error inserting into database:', err);
-          return res.status(500).json({ error: "Internal server error" });
-        }
-        res.status(201).json({ message: "User registered successfully" });
-      });
-    });
+    if (userExists.rows.length > 0) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: "Internal server error" });

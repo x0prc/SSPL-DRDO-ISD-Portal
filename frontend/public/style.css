@@ -1,10 +1,16 @@
+/* Global Styles */
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
+/* Top Bar */
 .top-bar {
     position: fixed;
     top: 0;
@@ -13,7 +19,7 @@ body {
     background-color: #003366;
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 10px 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1500;
 }
@@ -32,25 +38,24 @@ body {
     align-items: center;
 }
 
+/* Centered Form Container */
 .container {
-    width: 80%; 
-    max-width: 1200px; 
+    width: 90%;
+    max-width: 400px;
     background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    margin: 300px auto 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-.form-container {
-    padding: 20px;
-    margin-bottom: 10px;
-}
-
+/* Form Styling */
 h2 {
     color: #003366;
     text-align: center;
     margin-bottom: 20px;
+    font-size: 22px;
 }
 
 label {
@@ -58,12 +63,13 @@ label {
     margin: 10px 0 5px;
     display: block;
     color: #333;
+    font-size: 14px;
 }
 
 input {
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
@@ -71,33 +77,38 @@ input {
     transition: all 0.3s ease;
 }
 
+/* Input Focus Effect */
 input:focus {
     border-color: #00509e;
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 80, 158, 0.5);
+    box-shadow: 0 0 8px rgba(0, 80, 158, 0.5);
 }
 
+/* Buttons */
 button {
     width: 100%;
     padding: 12px;
-    background-color: #003366;
+    background: linear-gradient(to right, #003366, #00509e);
     color: #ffffff;
     font-size: 16px;
     font-weight: bold;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.2s ease, background 0.3s ease;
 }
 
 button:hover {
-    background-color: #00509e;
+    background: linear-gradient(to right, #00509e, #003366);
+    transform: scale(1.02);
 }
 
+/* Text & Links */
 p {
     text-align: center;
     font-size: 14px;
     color: #666;
+    margin-top: 10px;
 }
 
 a {
@@ -110,6 +121,47 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Hidden Elements */
 .hidden {
     display: none;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
+    .top-bar {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    .top-bar-logo {
+        height: 50px;
+    }
+
+    .top-bar-text {
+        font-size: 16px;
+        margin-left: 0;
+        margin-top: 5px;
+    }
+
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    button {
+        font-size: 14px;
+    }
 }

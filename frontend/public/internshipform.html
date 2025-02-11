@@ -1,331 +1,331 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIT Data Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="sidebar.css">
-</head>
-<body>
-    <div class="top-bar">
-        <img src="drdo_logo.png" alt="Logo" class="top-bar-logo">
-        <div class="top-bar-text">
-            ठोसअवस्था भौतिकी प्रयोगशाला <br> Solid State Physics Laboratory
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SIT Data Form</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="sidebar.css">
+    </head>
+    <body>
+        <div class="top-bar">
+            <img src="drdo_logo.png" alt="Logo" class="top-bar-logo">
+            <div class="top-bar-text">
+                ठोसअवस्था भौतिकी प्रयोगशाला <br> Solid State Physics Laboratory
+            </div>
         </div>
-    </div>
-    <button id="sidebarToggle" class="btn btn-primary">
-        <i class="bi bi-list"></i>
-    </button>
+        <button id="sidebarToggle" class="btn btn-primary">
+            <i class="bi bi-list"></i>
+        </button>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
-                <div class="position-sticky sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/frontend/public/index.html">
-                                <i class="bi bi-house-door"></i>
-                                Home
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/generatecertificate.html">
-                                <i class="bi bi-file-earmark-text"></i>
-                                Generate Certificate
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/results.html">
-                                <i class="bi bi-pencil-square"></i>
-                                Update
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/results.html">
-                                <i class="bi bi-file-earmark-text"></i>
-                                Results
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/index.html">
-                                <i class="bi bi-box-arrow-right"></i>
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-
-            <!-- Main content -->
-            <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
-                <div class="container mx-auto px-4 py-5">
-                    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold mb-6 text-center">SIT Data Form</h2>
-
-                        <div id="errorContainer" class="mb-4 p-3 bg-danger text-white rounded d-none"></div>
-
-                        <form id="internshipForm" class="needs-validation" novalidate>
-                            <!-- Personal Information Section -->
-                            <div class="mb-4">
-                                <h3 class="text-xl font-semibold">Personal Information</h3>
-
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                    <div class="invalid-feedback">Please enter your name.</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="rollNumber" class="form-label">Roll Number</label>
-                                    <input type="text" class="form-control" id="rollNumber" name="rollNumber" required>
-                                    <div class="invalid-feedback">Please enter your roll number.</div>
-                                </div>
-                            </div>
-
-                            <!-- Decision Buttons -->
-                            <div class="d-flex justify-content-center mb-4">
-                                <div class="btn-group" role="group" aria-label="Decision buttons">
-                                    <button type="button" class="btn btn-outline-success" id="acceptButton">Accept</button>
-                                    <button type="button" class="btn btn-outline-danger" id="rejectButton">Reject</button>
-                                </div>
-                            </div>
-
-                            <!-- Acceptance Details (initially hidden) -->
-                            <div id="acceptanceDetails" class="mb-4 d-none">
-                                <h3 class="text-xl font-semibold">Acceptance Details</h3>
-                                <div class="mb-3">
-                                    <label for="registrationId" class="form-label">Registration ID</label>
-                                    <input type="text" class="form-control" id="registrationId" name="registrationId">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="institute" class="form-label">Institute</label>
-                                    <input type="text" class="form-control" id="institute" name="institute">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="dob" class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="dob" name="dob">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="gender" class="form-label">Gender</label>
-                                    <select class="form-select" id="gender" name="gender">
-                                        <option value="">Select gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="state" class="form-label">State</label>
-                                    <input type="text" class="form-control" id="state" name="state">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="aadhar" class="form-label">Aadhar Number</label>
-                                    <input type="text" class="form-control" id="aadhar" name="aadhar">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="branch" class="form-label">Branch</label>
-                                    <input type="text" class="form-control" id="branch" name="branch">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="topic" class="form-label">Topic</label>
-                                    <input type="text" class="form-control" id="topic" name="topic">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="periodOfTraining" class="form-label">Period of Training</label>
-                                    <input type="text" class="form-control" id="periodOfTraining" name="periodOfTraining">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="emailSentDate" class="form-label">Email Sent Date</label>
-                                    <input type="date" class="form-control" id="emailSentDate" name="emailSentDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="joined" class="form-label">Joined</label>
-                                    <select class="form-select" id="joined" name="joined">
-                                        <option value="">Select</option>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="joiningDate" class="form-label">Joining Date</label>
-                                    <input type="date" class="form-control" id="joiningDate" name="joiningDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="relievingDate" class="form-label">Relieving Date</label>
-                                    <input type="date" class="form-control" id="relievingDate" name="relievingDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="supervisingScientist" class="form-label">Supervising Scientist</label>
-                                    <input type="text" class="form-control" id="supervisingScientist" name="supervisingScientist">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="certificateIssuedDate" class="form-label">Certificate Issued Date</label>
-                                    <input type="date" class="form-control" id="certificateIssuedDate" name="certificateIssuedDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="4"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- Rejection Details (initially hidden) -->
-                            <div id="rejectionDetails" class="mb-4 d-none">
-                                <h3 class="text-xl font-semibold">Rejection Details</h3>
-                                <div class="mb-3">
-                                    <label for="rejectionRemarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="rejectionRemarks" name="rejectionRemarks" rows="4"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-secondary me-2" id="previewButton">Preview</button>
-                                <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
-                            </div>
-                        </form>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+                    <div class="position-sticky sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/frontend/public/index.html">
+                                    <i class="bi bi-house-door"></i>
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/frontend/public/generatecertificate.html">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    Generate Certificate
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/frontend/public/results.html">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Update
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/frontend/public/results.html">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                    Results
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/frontend/public/index.html">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-            </main>
+                </nav>
+
+                <!-- Main content -->
+                <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                    <div class="container mx-auto px-4 py-5">
+                        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-2xl font-bold mb-6 text-center">SIT Data Form</h2>
+
+                            <div id="errorContainer" class="mb-4 p-3 bg-danger text-white rounded d-none"></div>
+
+                            <form id="internshipForm" class="needs-validation" novalidate>
+                                <!-- Personal Information Section -->
+                                <div class="mb-4">
+                                    <h3 class="text-xl font-semibold">Personal Information</h3>
+
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" required>
+                                        <div class="invalid-feedback">Please enter your name.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="rollNumber" class="form-label">Roll Number</label>
+                                        <input type="text" class="form-control" id="rollNumber" name="rollNumber" required>
+                                        <div class="invalid-feedback">Please enter your roll number.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Decision Buttons -->
+                                <div class="d-flex justify-content-center mb-4">
+                                    <div class="btn-group" role="group" aria-label="Decision buttons">
+                                        <button type="button" class="btn btn-outline-success" id="acceptButton">Accept</button>
+                                        <button type="button" class="btn btn-outline-danger" id="rejectButton">Reject</button>
+                                    </div>
+                                </div>
+
+                                <!-- Acceptance Details (initially hidden) -->
+                                <div id="acceptanceDetails" class="mb-4 d-none">
+                                    <h3 class="text-xl font-semibold">Acceptance Details</h3>
+                                    <div class="mb-3">
+                                        <label for="registrationId" class="form-label">Registration ID</label>
+                                        <input type="text" class="form-control" id="registrationId" name="registrationId">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="institute" class="form-label">Institute</label>
+                                        <input type="text" class="form-control" id="institute" name="institute">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="dob" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="dob" name="dob">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender</label>
+                                        <select class="form-select" id="gender" name="gender">
+                                            <option value="">Select gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State</label>
+                                        <input type="text" class="form-control" id="state" name="state">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="aadhar" class="form-label">Aadhar Number</label>
+                                        <input type="text" class="form-control" id="aadhar" name="aadhar">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="branch" class="form-label">Branch</label>
+                                        <input type="text" class="form-control" id="branch" name="branch">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="topic" class="form-label">Topic</label>
+                                        <input type="text" class="form-control" id="topic" name="topic">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="periodOfTraining" class="form-label">Period of Training</label>
+                                        <input type="text" class="form-control" id="periodOfTraining" name="periodOfTraining">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="emailSentDate" class="form-label">Email Sent Date</label>
+                                        <input type="date" class="form-control" id="emailSentDate" name="emailSentDate">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="joined" class="form-label">Joined</label>
+                                        <select class="form-select" id="joined" name="joined">
+                                            <option value="">Select</option>
+                                            <option value="true">Yes</option>
+                                            <option value="false">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="joiningDate" class="form-label">Joining Date</label>
+                                        <input type="date" class="form-control" id="joiningDate" name="joiningDate">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="relievingDate" class="form-label">Relieving Date</label>
+                                        <input type="date" class="form-control" id="relievingDate" name="relievingDate">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="supervisingScientist" class="form-label">Supervising Scientist</label>
+                                        <input type="text" class="form-control" id="supervisingScientist" name="supervisingScientist">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="certificateIssuedDate" class="form-label">Certificate Issued Date</label>
+                                        <input type="date" class="form-control" id="certificateIssuedDate" name="certificateIssuedDate">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="remarks" class="form-label">Remarks</label>
+                                        <textarea class="form-control" id="remarks" name="remarks" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Rejection Details (initially hidden) -->
+                                <div id="rejectionDetails" class="mb-4 d-none">
+                                    <h3 class="text-xl font-semibold">Rejection Details</h3>
+                                    <div class="mb-3">
+                                        <label for="rejectionRemarks" class="form-label">Remarks</label>
+                                        <textarea class="form-control" id="rejectionRemarks" name="rejectionRemarks" rows="4"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-secondary me-2" id="previewButton">Preview</button>
+                                    <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // State management
-        let formState = {
-            decision: null,
-            formData: {}
-        };
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // State management
+            let formState = {
+                decision: null,
+                formData: {}
+            };
 
-        // DOM elements
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const acceptButton = document.getElementById('acceptButton');
-        const rejectButton = document.getElementById('rejectButton');
-        const acceptanceDetails = document.getElementById('acceptanceDetails');
-        const rejectionDetails = document.getElementById('rejectionDetails');
-        const submitButton = document.getElementById('submitButton');
-        const form = document.getElementById('internshipForm');
-        const previewButton = document.getElementById('previewButton');
+            // DOM elements
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const acceptButton = document.getElementById('acceptButton');
+            const rejectButton = document.getElementById('rejectButton');
+            const acceptanceDetails = document.getElementById('acceptanceDetails');
+            const rejectionDetails = document.getElementById('rejectionDetails');
+            const submitButton = document.getElementById('submitButton');
+            const form = document.getElementById('internshipForm');
+            const previewButton = document.getElementById('previewButton');
 
-        // Event listeners
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
-            mainContent.classList.toggle('active');
-        });
+            // Event listeners
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                mainContent.classList.toggle('active');
+            });
 
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(event) {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnToggleButton = sidebarToggle.contains(event.target);
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggleButton = sidebarToggle.contains(event.target);
 
-            if (!isClickInsideSidebar && !isClickOnToggleButton && sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-                mainContent.classList.remove('active');
+                if (!isClickInsideSidebar && !isClickOnToggleButton && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mainContent.classList.remove('active');
+                }
+            });
+
+            acceptButton.addEventListener('click', () => setDecision('accept'));
+            rejectButton.addEventListener('click', () => setDecision('reject'));
+            form.addEventListener('submit', handleSubmit);
+            previewButton.addEventListener('click', showPreview);
+
+            function setDecision(decision) {
+                formState.decision = decision;
+                updateFormView();
             }
-        });
 
-        acceptButton.addEventListener('click', () => setDecision('accept'));
-        rejectButton.addEventListener('click', () => setDecision('reject'));
-        form.addEventListener('submit', handleSubmit);
-        previewButton.addEventListener('click', showPreview);
-
-        function setDecision(decision) {
-            formState.decision = decision;
-            updateFormView();
-        }
-
-        function updateFormView() {
-            if (formState.decision === 'accept') {
-                acceptanceDetails.classList.remove('d-none');
-                rejectionDetails.classList.add('d-none');
-                acceptButton.classList.add('active');
-                rejectButton.classList.remove('active');
-            } else if (formState.decision === 'reject') {
-                acceptanceDetails.classList.add('d-none');
-                rejectionDetails.classList.remove('d-none');
-                acceptButton.classList.remove('active');
-                rejectButton.classList.add('active');
-            } else {
-                acceptanceDetails.classList.add('d-none');
-                rejectionDetails.classList.add('d-none');
-                acceptButton.classList.remove('active');
-                rejectButton.classList.remove('active');
-            }
-        }
-
-        function showPreview() {
-            const formData = new FormData(form);
-            const previewData = Object.fromEntries(formData.entries());
-            
-            let previewContent = `
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Form Preview</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-                </head>
-                <body>
-                    <div class="container mt-5">
-                        <h2 class="mb-4">Form Preview</h2>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Field</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
-
-            for (const [key, value] of Object.entries(previewData)) {
-                if (value) {
-                    previewContent += `
-                        <tr>
-                            <td>${key}</td>
-                            <td>${value}</td>
-                        </tr>
-                    `;
+            function updateFormView() {
+                if (formState.decision === 'accept') {
+                    acceptanceDetails.classList.remove('d-none');
+                    rejectionDetails.classList.add('d-none');
+                    acceptButton.classList.add('active');
+                    rejectButton.classList.remove('active');
+                } else if (formState.decision === 'reject') {
+                    acceptanceDetails.classList.add('d-none');
+                    rejectionDetails.classList.remove('d-none');
+                    acceptButton.classList.remove('active');
+                    rejectButton.classList.add('active');
+                } else {
+                    acceptanceDetails.classList.add('d-none');
+                    rejectionDetails.classList.add('d-none');
+                    acceptButton.classList.remove('active');
+                    rejectButton.classList.remove('active');
                 }
             }
 
-            previewContent += `
-                            </tbody>
-                        </table>
-                    </div>
-                </body>
-                </html>
-            `;
+            function showPreview() {
+                const formData = new FormData(form);
+                const previewData = Object.fromEntries(formData.entries());
+                
+                let previewContent = `
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Form Preview</title>
+                        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+                    </head>
+                    <body>
+                        <div class="container mt-5">
+                            <h2 class="mb-4">Form Preview</h2>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Field</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
 
-            const previewWindow = window.open('', 'Preview', 'width=600,height=600,scrollbars=yes');
-            previewWindow.document.write(previewContent);
-            previewWindow.document.close();
-        }
+                for (const [key, value] of Object.entries(previewData)) {
+                    if (value) {
+                        previewContent += `
+                            <tr>
+                                <td>${key}</td>
+                                <td>${value}</td>
+                            </tr>
+                        `;
+                    }
+                }
 
-        function handleSubmit(event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-            formState.formData = Object.fromEntries(formData.entries());
-            console.log('Form submitted:', formState);
-            setTimeout(() => {
-                // Redirect to success page
-                window.location.href = 'success.html';
-            }, 1000);
-        }
-    </script>
-</body>
-</html>
+                previewContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </body>
+                    </html>
+                `;
+
+                const previewWindow = window.open('', 'Preview', 'width=600,height=600,scrollbars=yes');
+                previewWindow.document.write(previewContent);
+                previewWindow.document.close();
+            }
+
+            function handleSubmit(event) {
+                event.preventDefault();
+                const formData = new FormData(form);
+                formState.formData = Object.fromEntries(formData.entries());
+                console.log('Form submitted:', formState);
+                setTimeout(() => {
+                    // Redirect to success page
+                    window.location.href = 'success.html';
+                }, 1000);
+            }
+        </script>
+    </body>
+    </html>
