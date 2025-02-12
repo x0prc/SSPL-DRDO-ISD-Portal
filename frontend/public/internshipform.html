@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="sidebar.css">
+    <style>
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -71,13 +77,13 @@
                                 <h3 class="text-xl font-semibold">Personal Information</h3>
 
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Name</label>
+                                    <label for="name" class="form-label required">Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                     <div class="invalid-feedback">Please enter your name.</div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="rollNumber" class="form-label">Roll Number</label>
+                                    <label for="rollNumber" class="form-label required">Roll Number</label>
                                     <input type="text" class="form-control" id="rollNumber" name="rollNumber" required>
                                     <div class="invalid-feedback">Please enter your roll number.</div>
                                 </div>
@@ -92,31 +98,32 @@
                             </div>
 
                             <!-- Acceptance Details (initially hidden) -->
+                            <!-- Acceptance Details (initially hidden) -->
                             <div id="acceptanceDetails" class="mb-4 d-none">
                                 <h3 class="text-xl font-semibold">Acceptance Details</h3>
                                 <div class="mb-3">
-                                    <label for="registrationId" class="form-label">Registration ID</label>
-                                    <input type="text" class="form-control" id="registrationId" name="registrationId">
+                                    <label for="registrationId" class="form-label required">Registration ID</label>
+                                    <input type="text" class="form-control" id="registrationId" name="registrationId" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email">
+                                    <label for="email" class="form-label required">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone">
+                                    <label for="phone" class="form-label required">Phone</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="institute" class="form-label">Institute</label>
-                                    <input type="text" class="form-control" id="institute" name="institute">
+                                    <label for="institute" class="form-label required">Institute</label>
+                                    <input type="text" class="form-control" id="institute" name="institute" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="dob" class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="dob" name="dob">
+                                    <label for="dob" class="form-label required">Date of Birth</label>
+                                    <input type="date" class="form-control" id="dob" name="dob" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="gender" class="form-label">Gender</label>
-                                    <select class="form-select" id="gender" name="gender">
+                                    <label for="gender" class="form-label required">Gender</label>
+                                    <select class="form-select" id="gender" name="gender" required>
                                         <option value="">Select gender</option>
                                         <option value="male">Male</option>
                                         <option value="female">Female</option>
@@ -124,65 +131,82 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="state" class="form-label">State</label>
-                                    <input type="text" class="form-control" id="state" name="state">
+                                    <label for="state" class="form-label required">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="aadhar" class="form-label">Aadhar Number</label>
-                                    <input type="text" class="form-control" id="aadhar" name="aadhar">
+                                    <label for="aadhar" class="form-label required">Aadhar Number</label>
+                                    <input type="text" class="form-control" id="aadhar" name="aadhar" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="branch" class="form-label">Branch</label>
-                                    <input type="text" class="form-control" id="branch" name="branch">
+                                    <label for="branch" class="form-label required">Branch</label>
+                                    <input type="text" class="form-control" id="branch" name="branch" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="topic" class="form-label">Topic</label>
-                                    <input type="text" class="form-control" id="topic" name="topic">
+                                    <label for = "topic" class="form-label required">Topic</label>
+                                    <input type= "text" class="form-control" id="topic" name="topic" required />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="periodOfTraining" class="form-label">Period of Training</label>
-                                    <input type="text" class="form-control" id="periodOfTraining" name="periodOfTraining">
+
+                                <!-- Removed 'required' from these fields -->
+                                <div class='mb-3'>
+                                    <label for='periodOfTraining' class='form-label required'>Period of Training</label>
+                                    <input type='text' class='form-control' id='periodOfTraining' name='periodOfTraining' required />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="emailSentDate" class="form-label">Email Sent Date</label>
-                                    <input type="date" class="form-control" id="emailSentDate" name="emailSentDate">
+
+                                <!-- Email Sent Date -->
+                                <div class='mb-3'>
+                                    <label for='emailSentDate' class='form-label required'>Email Sent Date</label>
+                                    <input type='date' class='form-control' id='emailSentDate' name='emailSentDate' required />
                                 </div>
-                                <div class="mb-3">
-                                    <label for="joined" class="form-label">Joined</label>
-                                    <select class="form-select" id="joined" name="joined">
-                                        <option value="">Select</option>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="joiningDate" class="form-label">Joining Date</label>
-                                    <input type="date" class="form-control" id="joiningDate" name="joiningDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="relievingDate" class="form-label">Relieving Date</label>
-                                    <input type="date" class="form-control" id="relievingDate" name="relievingDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="supervisingScientist" class="form-label">Supervising Scientist</label>
-                                    <input type="text" class="form-control" id="supervisingScientist" name="supervisingScientist">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="certificateIssuedDate" class="form-label">Certificate Issued Date</label>
-                                    <input type="date" class="form-control" id="certificateIssuedDate" name="certificateIssuedDate">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="remarks" name="remarks" rows="4"></textarea>
-                                </div>
-                            </div>
+
+                                <!-- Joined -->
+                                <div class='mb-3'>
+                                    <label for='joined' class='form-label required'>Joined</label>
+                                    <select class='form-select' id='joined' name='joined' required >
+                                        <option value='' >Select</option >
+                                        <option value='true'>Yes</option >
+                                        <option value='false'>No</option >
+                                    </select >
+                                </div >
+
+                                <!-- Joining Date -->
+                                <div class='mb-3'>
+                                    <label for='joiningDate' class='form-label required'>Joining Date</label >
+                                    <input type='date'  class='form-control'id='joiningDate'name='joiningDate'required/>
+                                </div >
+
+                                <!-- Relieving Date (not mandatory anymore) -->
+                                <div class='mb-3'>
+                                    <label for='relievingDate'class ='form-label'>Relieving Date</label >
+                                    <input type ='date'class ='form-control'id ='relievingDate'name ='relievingDate'/>
+                                </div >
+
+                                <!-- Supervising Scientist -->
+                                <div class ='mb-3'>
+                                    <label for ='supervisingScientist'class ='form-label required'>Supervising Scientist</label >
+                                    <input type ='text'class ='form-control'id ='supervisingScientist'name ='supervisingScientist'required/>
+                                </div >
+
+                            <!-- Certificate Issued Date (not mandatory anymore) -->
+                            <div class ='mb-3'>
+                                <label for ='certificateIssuedDate'class ='form-label'>Certificate Issued Date</label >
+                                <input type ='date'class ='form-control'id ='certificateIssuedDate'name ='certificateIssuedDate'/>
+                            </div >
+
+                            <!-- Remarks (not mandatory anymore) -->
+                            <div class ='mb-3'>
+                                <label for ='remarks'class ='form-label'>Remarks</label >
+                                <textarea  rows = '4'class ='form-control'id ='remarks'name ='remarks'></textarea >
+                            </div >
+                            </div >
+
 
                             <!-- Rejection Details (initially hidden) -->
                             <div id="rejectionDetails" class="mb-4 d-none">
                                 <h3 class="text-xl font-semibold">Rejection Details</h3>
                                 <div class="mb-3">
-                                    <label for="rejectionRemarks" class="form-label">Remarks</label>
-                                    <textarea class="form-control" id="rejectionRemarks" name="rejectionRemarks" rows="4"></textarea>
+                                    <label for="rejectionRemarks" class="form-label required">Remarks</label>
+                                    <textarea class="form-control" id="rejectionRemarks" name="rejectionRemarks" rows="4" required></textarea>
                                 </div>
                             </div>
 
@@ -200,195 +224,113 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // State management
-        let formState = {
-            decision: null,
-            formData: {}
-        };
+let formState = {
+    decision: null,
+    formData: {}
+};
 
-        // DOM elements
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const acceptButton = document.getElementById('acceptButton');
-        const rejectButton = document.getElementById('rejectButton');
-        const acceptanceDetails = document.getElementById('acceptanceDetails');
-        const rejectionDetails = document.getElementById('rejectionDetails');
-        const submitButton = document.getElementById('submitButton');
-        const form = document.getElementById('internshipForm');
-        const previewButton = document.getElementById('previewButton');
+// DOM elements
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('main-content');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const acceptButton = document.getElementById('acceptButton');
+const rejectButton = document.getElementById('rejectButton');
+const acceptanceDetails = document.getElementById('acceptanceDetails');
+const rejectionDetails = document.getElementById('rejectionDetails');
+const submitButton = document.getElementById('submitButton');
+const form = document.getElementById('internshipForm');
+const previewButton = document.getElementById('previewButton');
 
+acceptButton.addEventListener('click', () => setDecision('accept'));
+rejectButton.addEventListener('click', () => setDecision('reject'));
+form.addEventListener('submit', handleSubmit);
+previewButton.addEventListener('click', showPreview);
 
-        acceptButton.addEventListener('click', () => setDecision('accept'));
-        rejectButton.addEventListener('click', () => setDecision('reject'));
-        form.addEventListener('submit', handleSubmit);
-        previewButton.addEventListener('click', showPreview);
+function setDecision(decision) {
+    formState.decision = decision;
+    updateFormView();
+}
 
-        function setDecision(decision) {
-            formState.decision = decision;
-            updateFormView();
-        }
+function updateFormView() {
+    if (formState.decision === 'accept') {
+        acceptanceDetails.classList.remove('d-none');
+        rejectionDetails.classList.add('d-none');
+        acceptButton.classList.add('active');
+        rejectButton.classList.remove('active');
+    } else if (formState.decision === 'reject') {
+        acceptanceDetails.classList.add('d-none');
+        rejectionDetails.classList.remove('d-none');
+        acceptButton.classList.remove('active');
+        rejectButton.classList.add('active');
+    } else {
+        acceptanceDetails.classList.add('d-none');
+        rejectionDetails.classList.add('d-none');
+        acceptButton.classList.remove('active');
+        rejectButton.classList.remove('active');
+    }
+}
 
-        function updateFormView() {
-            if (formState.decision === 'accept') {
-                acceptanceDetails.classList.remove('d-none');
-                rejectionDetails.classList.add('d-none');
-                acceptButton.classList.add('active');
-                rejectButton.classList.remove('active');
-            } else if (formState.decision === 'reject') {
-                acceptanceDetails.classList.add('d-none');
-                rejectionDetails.classList.remove('d-none');
-                acceptButton.classList.remove('active');
-                rejectButton.classList.add('active');
-            } else {
-                acceptanceDetails.classList.add('d-none');
-                rejectionDetails.classList.add('d-none');
-                acceptButton.classList.remove('active');
-                rejectButton.classList.remove('active');
-            }
-        }
-
-        function showPreview() {
-            const formData = new FormData(form);
-            const previewData = Object.fromEntries(formData.entries());
-            
-            let previewContent = `
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Form Preview</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-                </head>
-                <body>
-                    <div class="container mt-5">
-                        <h2 class="mb-4">Form Preview</h2>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Field</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-            `;
-
-            for (const [key, value] of Object.entries(previewData)) {
-                if (value) {
-                    previewContent += `
+function showPreview() {
+    const formData = new FormData(form);
+    const previewData = Object.fromEntries(formData.entries());
+    
+    let previewContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Form Preview</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h2 class="mb-4">Form Preview</h2>
+                <table class="table table-bordered">
+                    <thead>
                         <tr>
-                            <td>${key}</td>
-                            <td>${value}</td>
+                            <th>Field</th>
+                            <th>Value</th>
                         </tr>
-                    `;
-                }
-            }
+                    </thead>
+                    <tbody>
+    `;
 
+    for (const [key, value] of Object.entries(previewData)) {
+        if (value) {
             previewContent += `
-                            </tbody>
-                        </table>
-                    </div>
-                </body>
-                </html>
+                <tr>
+                    <td>${key}</td>
+                    <td>${value}</td>
+                </tr>
             `;
-
-            const previewWindow = window.open('', 'Preview', 'width=600,height=600,scrollbars=yes');
-            previewWindow.document.write(previewContent);
-            previewWindow.document.close();
         }
+    }
 
-        function handleSubmit(event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-            formState.formData = Object.fromEntries(formData.entries());
-            console.log('Form submitted:', formState);
-            setTimeout(() => {
-                // Redirect to success page
-                window.location.href = 'success.html';
-            }, 1000);
-        }
-            document.getElementById('internshipForm').addEventListener('submit', async function(event) {
-                event.preventDefault(); // Prevent default form submission
-        
-                let form = event.target;
-                let formData = new FormData(form);
-                let jsonData = Object.fromEntries(formData.entries());
-        
-                // Basic form validation
-                if (!jsonData.name || !jsonData.rollNumber || !jsonData.email || !jsonData.phone) {
-                    alert("Please fill out all required fields.");
-                    return;
-                }
-        
-                try {
-                    let response = await fetch("http://localhost:5000/api/submitInternshipForm", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(jsonData)
-                    });
-        
-                    let result = await response.json();
-                    if (response.ok) {
-                        alert("Form submitted successfully!");
-                        form.reset();
-                    } else {
-                        alert("Error: " + result.message);
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                    alert("Failed to submit form. Check the console for details.");
-                }
-            });
-            document.getElementById('internshipForm').addEventListener('submit', async function(event) {
-                event.preventDefault(); // Prevent default form submission
-    
-                let form = event.target;
-                let formData = new FormData(form);
-                let jsonData = Object.fromEntries(formData.entries());
-    
-                // Required fields
-                let requiredFields = ["name", "rollNumber", "email", "phone"];
-                let missingFields = [];
-    
-                // Check for missing fields
-                requiredFields.forEach(field => {
-                    let inputElement = document.getElementById(field);
-                    if (!jsonData[field] || jsonData[field].trim() === "") {
-                        missingFields.push(field);
-                        inputElement.classList.add("is-invalid"); // Add Bootstrap validation class
-                    } else {
-                        inputElement.classList.remove("is-invalid"); // Remove validation class if fixed
-                    }
-                });
-    
-                if (missingFields.length > 0) {
-                    alert("Please fill out all required fields before submitting.");
-                    return; // Stop submission if validation fails
-                }
-    
-                try {
-                    let response = await fetch("http://localhost:5000/api/submitInternshipForm", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(jsonData)
-                    });
-    
-                    let result = await response.json();
-                    if (response.ok) {
-                        alert("Form submitted successfully!");
-                        form.reset();
-                    } else {
-                        alert("Error: " + result.message);
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                    alert("Failed to submit form. Check the console for details.");
-                }
-            });
+    previewContent += `
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+    `;
+
+    const previewWindow = window.open('', 'Preview', 'width=600,height=600,scrollbars=yes');
+    previewWindow.document.write(previewContent);
+    previewWindow.document.close();
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    formState.formData = Object.fromEntries(formData.entries());
+    console.log('Form submitted:', formState);
+    setTimeout(() => {
+        // Redirect to success page
+        window.location.href = 'success.html';
+    }, 1000);
+}
+
     </script>
 </body>
 </html>
