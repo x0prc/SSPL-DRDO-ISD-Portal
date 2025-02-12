@@ -24,31 +24,31 @@
                 <div class="position-sticky sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/frontend/public/index.html">
+                            <a class="nav-link active" href="internshipform.html">
                                 <i class="bi bi-house-door"></i>
                                 Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/generatecertificate.html">
+                            <a class="nav-link" href="generatecertificate.html">
                                 <i class="bi bi-file-earmark-text"></i>
                                 Generate Certificate
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/results.html">
+                            <a class="nav-link" href="results.html">
                                 <i class="bi bi-pencil-square"></i>
                                 Update
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/results.html">
+                            <a class="nav-link" href="results.html">
                                 <i class="bi bi-file-earmark-text"></i>
                                 Results
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/index.html">
+                            <a class="nav-link" href="index.html">
                                 <i class="bi bi-box-arrow-right"></i>
                                 Logout
                             </a>
@@ -307,6 +307,88 @@
                 window.location.href = 'success.html';
             }, 1000);
         }
+            document.getElementById('internshipForm').addEventListener('submit', async function(event) {
+                event.preventDefault(); // Prevent default form submission
+        
+                let form = event.target;
+                let formData = new FormData(form);
+                let jsonData = Object.fromEntries(formData.entries());
+        
+                // Basic form validation
+                if (!jsonData.name || !jsonData.rollNumber || !jsonData.email || !jsonData.phone) {
+                    alert("Please fill out all required fields.");
+                    return;
+                }
+        
+                try {
+                    let response = await fetch("http://localhost:5000/api/submitInternshipForm", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(jsonData)
+                    });
+        
+                    let result = await response.json();
+                    if (response.ok) {
+                        alert("Form submitted successfully!");
+                        form.reset();
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Failed to submit form. Check the console for details.");
+                }
+            });
+            document.getElementById('internshipForm').addEventListener('submit', async function(event) {
+                event.preventDefault(); // Prevent default form submission
+    
+                let form = event.target;
+                let formData = new FormData(form);
+                let jsonData = Object.fromEntries(formData.entries());
+    
+                // Required fields
+                let requiredFields = ["name", "rollNumber", "email", "phone"];
+                let missingFields = [];
+    
+                // Check for missing fields
+                requiredFields.forEach(field => {
+                    let inputElement = document.getElementById(field);
+                    if (!jsonData[field] || jsonData[field].trim() === "") {
+                        missingFields.push(field);
+                        inputElement.classList.add("is-invalid"); // Add Bootstrap validation class
+                    } else {
+                        inputElement.classList.remove("is-invalid"); // Remove validation class if fixed
+                    }
+                });
+    
+                if (missingFields.length > 0) {
+                    alert("Please fill out all required fields before submitting.");
+                    return; // Stop submission if validation fails
+                }
+    
+                try {
+                    let response = await fetch("http://localhost:5000/api/submitInternshipForm", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(jsonData)
+                    });
+    
+                    let result = await response.json();
+                    if (response.ok) {
+                        alert("Form submitted successfully!");
+                        form.reset();
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Failed to submit form. Check the console for details.");
+                }
+            });
     </script>
 </body>
 </html>

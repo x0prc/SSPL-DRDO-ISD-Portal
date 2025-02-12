@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import LoginPage from './components/LoginPage'; 
-import RegisterPage from './components/Register'; 
-import Dashboard from './components/Dashboard'; // Assuming this is the main page after login
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/Register';
+import Dashboard from './components/Dashboard';
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authState, setAuthState] = useState("LOGIN"); // LOGIN | REGISTER | DASHBOARD
 
   useEffect(() => {
-    // Check if a token exists in localStorage
     const token = localStorage.getItem('token');
     if (token) {
-      setIsAuthenticated(true);
+      setAuthState("DASHBOARD");
     }
   }, []);
 
-  const handleShowRegister = () => {
-    setShowLogin(false);
+  const handleLoginSuccess = () => {
+    localStorage.setItem('token', 'your_token'); // Replace with actual token from backend
+    setAuthState("DASHBOARD");
   };
 
-  const handleShowLogin = () => {
-    setShowLogin(true);
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setAuthState("LOGIN");
   };
 
   return (
     <div>
-      {isAuthenticated ? (
-        <Dashboard /> // Redirects to Dashboard if user is authenticated
-      ) : showLogin ? (
-        <LoginPage onLoginSuccess={() => setIsAuthenticated(true)} />
+      {authState === "DASHBOARD" ? (
+        <Dashboard onLogout={handleLogout} />
+      ) : authState === "LOGIN" ? (
+        <LoginPage onLoginSuccess={handleLoginSuccess} onSwitch={() => setAuthState("REGISTER")} />
       ) : (
-        <RegisterPage onRegisterSuccess={handleShowLogin} />
-      )}
-      {!isAuthenticated && (
-        <div className="button-container">
-          <button onClick={handleShowLogin}>Show Login</button>
-          <button onClick={handleShowRegister}>Show Register</button>
-        </div>
+        <RegisterPage onRegisterSuccess={() => setAuthState("LOGIN")} />
       )}
     </div>
   );

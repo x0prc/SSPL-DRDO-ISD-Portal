@@ -49,7 +49,6 @@ const authenticateToken = (req, res, next) => {
 app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
     if (result.rows.length === 0) {
@@ -57,14 +56,12 @@ app.post('/login', async (req, res) => {
     }
 
     const user = result.rows[0];
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-
     res.json({ token, username });
   } catch (error) {
     console.error('Login error:', error);
@@ -76,7 +73,6 @@ app.post('/login', async (req, res) => {
 app.post('/register', async (req, res) => {
   try {
     const { username, password } = req.body;
-
     const userExists = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 
     if (userExists.rows.length > 0) {
@@ -92,6 +88,73 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// Internship Form Submission Route
+app.post('/submit-internship-form', async (req, res) => {
+  try {
+    const {
+      name,
+      roll_number,
+      registration_id,
+      email,
+      phone,
+      institute,
+      dob,
+      gender,
+      state,
+      aadhar,
+      branch,
+      topic,
+      period_of_training,
+      email_sent_date,
+      joined,
+      joining_date,
+      relieving_date,
+      supervising_scientist,
+      certificate_issued_date,
+      remarks,
+      rejection_remarks
+    } = req.body;
+
+        // Convert gender to lowercase
+        const formattedGender = gender ? gender.toLowerCase() : null;
+
+    const query = `
+      INSERT INTO internship_form (
+        name, roll_number, registration_id, email, phone, institute, dob, gender, state, aadhar, branch, topic,
+        period_of_training, email_sent_date, joined, joining_date, relieving_date, supervising_scientist,
+        certificate_issued_date, remarks, rejection_remarks
+      ) VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+        $13, $14, $15, $16, $17, $18, $19, $20, $21
+      ) RETURNING *`;
+
+    const values = [
+      name, roll_number, registration_id, email, phone, institute, dob, gender, state, aadhar, branch, topic,
+      period_of_training, email_sent_date, joined, joining_date, relieving_date, supervising_scientist,
+      certificate_issued_date, remarks, rejection_remarks
+    ];
+
+    const result = await pool.query(query, values);
+    res.status(201).json({ message: "Internship form submitted successfully", data: result.rows[0] });
+  } catch (error) {
+    console.error('Error submitting internship form:', error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Result Page 
+app.get('/get-internship-data', async (req, res) => {
+  try {
+    const query = `SELECT * FROM internship_form`;
+    const result = await pool.query(query);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching internship data:', error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 // Serve Frontend Static Files
 app.use(express.static(path.join(__dirname, 'frontend/public')));

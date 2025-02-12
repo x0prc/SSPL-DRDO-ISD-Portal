@@ -24,33 +24,28 @@
                 <div class="position-sticky sidebar-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/index.html">
-                                <i class="bi bi-house-door"></i>
-                                Home
+                            <a class="nav-link" href="internshipform.html">
+                                <i class="bi bi-house-door"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/generatecertificate.html">
-                                <i class="bi bi-file-earmark-text"></i>
-                                Generate Certificate
+                            <a class="nav-link" href="generatecertificate.html">
+                                <i class="bi bi-file-earmark-text"></i> Generate Certificate
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/results.html">
-                                <i class="bi bi-pencil-square"></i>
-                                Update
+                            <a class="nav-link" href="results.html">
+                                <i class="bi bi-pencil-square"></i> Update
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/frontend/public/results.html">
-                                <i class="bi bi-file-earmark-text"></i>
-                                Results
+                            <a class="nav-link active" href="results.html">
+                                <i class="bi bi-file-earmark-text"></i> Results
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frontend/public/index.html">
-                                <i class="bi bi-box-arrow-right"></i>
-                                Logout
+                            <a class="nav-link" href="index.html">
+                                <i class="bi bi-box-arrow-right"></i> Logout
                             </a>
                         </li>
                     </ul>
@@ -121,15 +116,18 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const sampleData = [
-            { name: "John Doe", rollNumber: "12345", institute: "IIT Delhi", branch: "Computer Science", topic: "Machine Learning", scientistAllocated: "Dr. Smith", registration: "Yes" },
-            { name: "Jane Smith", rollNumber: "67890", institute: "NIT Trichy", branch: "Electronics", topic: "IoT", scientistAllocated: "Dr. Johnson", registration: "No" },
-            // Add more sample data as needed
-        ];
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/internship-data');
+                const data = await response.json();
+                populateResultsTable(data);
+                populateFilterDropdowns(data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
 
-        // Function to populate the results table
         function populateResultsTable(data) {
             const tableBody = document.getElementById('resultsTableBody');
             tableBody.innerHTML = '';
@@ -138,12 +136,12 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item.name}</td>
-                    <td>${item.rollNumber}</td>
+                    <td>${item.roll_number}</td>
                     <td>${item.institute}</td>
                     <td>${item.branch}</td>
                     <td>${item.topic}</td>
-                    <td>${item.scientistAllocated}</td>
-                    <td>${item.registration}</td>
+                    <td>${item.scientist_allocated}</td>
+                    <td>${item.registration ? "Yes" : "No"}</td>
                     <td>
                         <button class="btn btn-sm btn-primary">Edit</button>
                         <button class="btn btn-sm btn-danger">Delete</button>
@@ -153,7 +151,6 @@
             });
         }
 
-        // Function to populate filter dropdowns
         function populateFilterDropdowns(data) {
             const filters = {
                 scientistFilter: new Set(),
@@ -163,7 +160,7 @@
             };
 
             data.forEach(item => {
-                filters.scientistFilter.add(item.scientistAllocated);
+                filters.scientistFilter.add(item.scientist_allocated);
                 filters.instituteFilter.add(item.institute);
                 filters.branchFilter.add(item.branch);
                 filters.topicFilter.add(item.topic);
@@ -171,6 +168,7 @@
 
             for (const [filterId, values] of Object.entries(filters)) {
                 const select = document.getElementById(filterId);
+                select.innerHTML = `<option value="">${select.options[0].text}</option>`;
                 values.forEach(value => {
                     const option = document.createElement('option');
                     option.value = value;
@@ -180,33 +178,22 @@
             }
         }
 
-        // Function to apply filters
-        function applyFilters() {
-            const scientist = document.getElementById('scientistFilter').value;
-            const institute = document.getElementById('instituteFilter').value;
-            const branch = document.getElementById('branchFilter').value;
-            const topic = document.getElementById('topicFilter').value;
-            const registration = document.getElementById('registrationFilter').value;
+        async function applyFilters() {
+            const params = new URLSearchParams({
+                scientist: document.getElementById('scientistFilter').value,
+                institute: document.getElementById('instituteFilter').value,
+                branch: document.getElementById('branchFilter').value,
+                topic: document.getElementById('topicFilter').value,
+                registration: document.getElementById('registrationFilter').value
+            });
 
-            const filteredData = sampleData.filter(item => 
-                (!scientist || item.scientistAllocated === scientist) &&
-                (!institute || item.institute === institute) &&
-                (!branch || item.branch === branch) &&
-                (!topic || item.topic === topic) &&
-                (!registration || item.registration.toLowerCase() === registration)
-            );
-
+            const response = await fetch(`/api/internship-data?${params}`);
+            const filteredData = await response.json();
             populateResultsTable(filteredData);
         }
 
-        // Event listener for apply filters button
         document.getElementById('applyFilters').addEventListener('click', applyFilters);
-
-        // Initial population of table and dropdowns
-        document.addEventListener('DOMContentLoaded', () => {
-            populateResultsTable(sampleData);
-            populateFilterDropdowns(sampleData);
-        });
+        document.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
 </html>
