@@ -8,6 +8,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="sidebar.css">
+    <style>
+            .filter-container {
+                margin-bottom: 10px;
+                display: flex;  
+                gap: 10px;
+                align-items: center;
+            }
+        
+            .filter-container input {
+                padding: 8px;
+                min-width: 200px; /* Ensures visibility */
+            }
+        
+            .filter-container .btn {
+                padding: 6px 12px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+    </style>
 </head>
 <body>
     <div class="top-bar">
@@ -55,54 +74,46 @@
             <!-- Main content -->
             <main id="main-content" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
                 <div class="resultscontainer mx-auto px-4 py-5">
-                    <h2 class="text-2xl font-bold mb-6">SIT Data Results</h2>
+                    <h2 class="text-2xl font-bold mb-4">SIT Data Results</h2>
 
-                    <!-- Filter Dropdowns -->
-                    <div class="row mb-4">
-                        <div class="col-md-2 mb-2">
-                            <select id="scientistFilter" class="form-select">
-                                <option value="">Scientist Allocated</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <select id="instituteFilter" class="form-select">
-                                <option value="">Institute</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <select id="branchFilter" class="form-select">
-                                <option value="">Branch</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <select id="topicFilter" class="form-select">
-                                <option value="">Topic</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <select id="registrationFilter" class="form-select">
-                                <option value="">Registration</option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 mb-2">
-                            <button id="applyFilters" class="btn btn-primary w-100">Apply Filters</button>
-                        </div>
+                    <!-- Filter Form -->
+                    <div class="filter-container">
+                        <input type="text" id="nameFilter" class="form-control" placeholder="Enter Name">
+                        <input type="text" id="regIdFilter" class="form-control" placeholder="Enter Registration ID">
+                        <input type="text" id="scientistFilter" class="form-control" placeholder="Enter Scientist Name">
+                        <input type="text" id="customFilter" class="form-control" placeholder="Enter Any Value">
+                        <button class="btn btn-primary" onclick="applyFilter()">Apply Filter</button>
                     </div>
+                    
 
                     <!-- Results Table -->
                     <div class="table-responsive">
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Name</th>
                                     <th>Roll Number</th>
+                                    <th>Registration ID</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
                                     <th>Institute</th>
+                                    <th>DOB</th>
+                                    <th>Gender</th>
+                                    <th>State</th>
+                                    <th>Aadhar</th>
                                     <th>Branch</th>
                                     <th>Topic</th>
-                                    <th>Scientist Allocated</th>
-                                    <th>Registration</th>
+                                    <th>Training Period</th>
+                                    <th>Email Sent Date</th>
+                                    <th>Joined</th>
+                                    <th>Joining Date</th>
+                                    <th>Relieving Date</th>
+                                    <th>Supervising Scientist</th>
+                                    <th>Certificate Issued Date</th>
+                                    <th>Remarks</th>
+                                    <th>Decision</th>
+                                    <th>Rejection Remarks</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -117,83 +128,81 @@
     </div>
 
     <script>
-        async function fetchData() {
+        async function fetchInternshipData(filters = {}) {
+            let url = '/get-internship-data';
+            let queryParams = new URLSearchParams(filters).toString();
+            if (queryParams) url += '?' + queryParams;
+    
             try {
-                const response = await fetch('/api/internship-data');
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Failed to fetch data");
+    
                 const data = await response.json();
                 populateResultsTable(data);
-                populateFilterDropdowns(data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
-
+    
         function populateResultsTable(data) {
             const tableBody = document.getElementById('resultsTableBody');
             tableBody.innerHTML = '';
-
+    
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td>${item.id}</td>
                     <td>${item.name}</td>
                     <td>${item.roll_number}</td>
+                    <td>${item.registration_id}</td>
+                    <td>${item.email}</td>
+                    <td>${item.phone}</td>
                     <td>${item.institute}</td>
+                    <td>${item.dob}</td>
+                    <td>${item.gender}</td>
+                    <td>${item.state}</td>
+                    <td>${item.aadhar}</td>
                     <td>${item.branch}</td>
                     <td>${item.topic}</td>
-                    <td>${item.scientist_allocated}</td>
-                    <td>${item.registration ? "Yes" : "No"}</td>
+                    <td>${item.period_of_training}</td>
+                    <td>${item.email_sent_date}</td>
+                    <td>${item.joined ? "Yes" : "No"}</td>
+                    <td>${item.joining_date}</td>
+                    <td>${item.relieving_date}</td>
+                    <td>${item.supervising_scientist}</td>
+                    <td>${item.certificate_issued_date}</td>
+                    <td>${item.remarks}</td>
+                    <td>${item.decision}</td>
+                    <td>${item.rejection_remarks}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
+                        <button class="btn btn-sm btn-success" onclick="generateReport(${item.id})">Generate Report</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
         }
-
-        function populateFilterDropdowns(data) {
-            const filters = {
-                scientistFilter: new Set(),
-                instituteFilter: new Set(),
-                branchFilter: new Set(),
-                topicFilter: new Set()
-            };
-
-            data.forEach(item => {
-                filters.scientistFilter.add(item.scientist_allocated);
-                filters.instituteFilter.add(item.institute);
-                filters.branchFilter.add(item.branch);
-                filters.topicFilter.add(item.topic);
-            });
-
-            for (const [filterId, values] of Object.entries(filters)) {
-                const select = document.getElementById(filterId);
-                select.innerHTML = `<option value="">${select.options[0].text}</option>`;
-                values.forEach(value => {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    option.textContent = value;
-                    select.appendChild(option);
-                });
-            }
+    
+        function applyFilter() {
+            const name = document.getElementById('nameFilter').value.trim();
+            const regId = document.getElementById('regIdFilter').value.trim();
+            const scientist = document.getElementById('scientistFilter').value.trim();
+            const custom = document.getElementById('customFilter').value.trim(); // New custom filter
+    
+            const filters = {};
+            if (name) filters.name = name;
+            if (regId) filters.registration_id = regId;
+            if (scientist) filters.supervising_scientist = scientist;
+            if (custom) filters.custom = custom; // Add the custom filter to the request
+    
+            fetchInternshipData(filters);
         }
-
-        async function applyFilters() {
-            const params = new URLSearchParams({
-                scientist: document.getElementById('scientistFilter').value,
-                institute: document.getElementById('instituteFilter').value,
-                branch: document.getElementById('branchFilter').value,
-                topic: document.getElementById('topicFilter').value,
-                registration: document.getElementById('registrationFilter').value
-            });
-
-            const response = await fetch(`/api/internship-data?${params}`);
-            const filteredData = await response.json();
-            populateResultsTable(filteredData);
+    
+        function generateReport(id) {
+            window.location.href = `/generate-report/${id}`;
         }
-
-        document.getElementById('applyFilters').addEventListener('click', applyFilters);
-        document.addEventListener('DOMContentLoaded', fetchData);
+    
+        document.addEventListener('DOMContentLoaded', () => fetchInternshipData());
     </script>
+    
 </body>
 </html>
