@@ -133,3 +133,64 @@ a:hover {
 .hidden {
     display: none;
 }
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .checkbox-container label {
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .checkbox-container label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  .checkbox-container input[type="checkbox"]:checked + label::before {
+    background-color: #007bff;
+  }
+  
+  .checkbox-container label::after {
+    content: '\2713';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    font-size: 18px;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .checkbox-container input[type="checkbox"]:checked + label::after {
+    opacity: 1;
+  }
+  
+  .checkbox-container input[type="checkbox"]:focus + label::before {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  }
+  
+  .checkbox-container:hover label::before {
+    border-color: #0056b3;
+  }
+  
