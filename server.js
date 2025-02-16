@@ -384,6 +384,30 @@ app.delete('/delete-internship/:id', async (req, res) => {
 
 
 
+
+app.get('/get-internship/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+
+      const query = `SELECT * FROM internship_form WHERE id = $1`;
+      const values = [id];
+
+      console.log("🚀 Fetching internship with ID:", id);
+
+      const result = await pool.query(query, values);
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: "Internship entry not found" });
+      }
+
+      res.json(result.rows[0]);
+  } catch (error) {
+      console.error("❌ Error fetching internship data:", error);
+      res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 // Serve Frontend Static Files
 app.use(express.static(path.join(__dirname, 'frontend/public')));
 app.get('*', (req, res) => {
