@@ -84,7 +84,7 @@
 
                                 <div class="mb-3">
                                     <label for="rollNumber" class="form-label required">Roll Number</label>
-                                    <input type="text" class="form-control" id="rollNumber" name="rollNumber" required>
+                                    <input type="text" class="form-control" id="rollNumber" name="roll_number" required>
                                     <div class="invalid-feedback">Please enter your roll number.</div>
                                 </div>
                             </div>
@@ -356,6 +356,51 @@ function handleSubmit(event) {
         window.location.href = 'success.html';
     }, 1000);
 }
+document.getElementById('internshipForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    
+    // Convert form data to JSON object
+    let formObject = Object.fromEntries(formData.entries());
+
+    // Ensure checkboxes send false when unchecked
+    formData.set('lor_check', document.getElementById('lorCheck').checked ? 'true' : 'false');
+    formData.set('cv_check', document.getElementById('cvCheck').checked ? 'true' : 'false');
+    formData.set('noc_check', document.getElementById('nocCheck').checked ? 'true' : 'false');
+
+
+    // Ensure empty dates are converted to null
+    ['dob', 'emailSentDate', 'joiningDate', 'relievingDate', 'certificateIssuedDate'].forEach(field => {
+        if (!formObject[field]) formObject[field] = null;
+    });
+
+    // Add decision (accept/reject)
+    formObject.decision = formState.decision || null;
+
+    console.log("📤 Sending Data to Server:", formObject);
+
+    try {
+        const response = await fetch('/submit-internship-form', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formObject)
+        });
+
+        if (!response.ok) throw new Error("Failed to submit form");
+
+        const result = await response.json();
+        console.log("✅ Server Response:", result);
+        alert("Form submitted successfully!");
+
+        // Redirect to success page or refresh form
+        window.location.href = 'results.html';
+    } catch (error) {
+        console.error("🚨 Submission Error:", error);
+        alert("Error submitting form! Check the console.");
+    }
+});
+
 
     </script>
 </body>

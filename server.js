@@ -94,114 +94,173 @@ app.post('/register', async (req, res) => {
 // Internship Form Submission Route
 app.post('/submit-internship-form', async (req, res) => {
   try {
-    const {
-      name,
-      roll_number,
-      registration_id,
-      email,
-      phone,
-      institute,
-      dob,
-      gender,
-      state,
-      aadhar,
-      branch,
-      topic,
-      period_of_training,
-      email_sent_date,
-      joined,
-      joining_date,
-      relieving_date,
-      supervising_scientist,
-      certificate_issued_date,
-      remarks,
-      rejection_remarks
+    console.log("\n📥 Received Form Data:", req.body); 
+
+    let {
+      name, roll_number, lor_check, cv_check, noc_check,
+      registration_id, email, phone, institute, dob, gender,
+      state, aadhar, branch, topic, period_of_training,
+      email_sent_date, joined, joining_date, relieving_date,
+      supervising_scientist, certificate_issued_date, remarks,
+      rejection_remarks, decision
     } = req.body;
 
-    // Convert gender to lowercase
-    const formattedGender = gender ? gender.toLowerCase() : null;
+    // ✅ Convert empty strings to NULL (for VARCHAR fields)
+    const convertEmptyToNull = (value) => (value === "" ? null : value);
 
+    name = convertEmptyToNull(name);
+    roll_number = convertEmptyToNull(roll_number);
+    registration_id = convertEmptyToNull(registration_id);
+    email = convertEmptyToNull(email);
+    phone = convertEmptyToNull(phone);
+    institute = convertEmptyToNull(institute);
+    gender = convertEmptyToNull(gender);
+    state = convertEmptyToNull(state);
+    aadhar = convertEmptyToNull(aadhar);
+    branch = convertEmptyToNull(branch);
+    topic = convertEmptyToNull(topic);
+    period_of_training = convertEmptyToNull(period_of_training);
+    supervising_scientist = convertEmptyToNull(supervising_scientist);
+    remarks = convertEmptyToNull(remarks);
+    rejection_remarks = convertEmptyToNull(rejection_remarks);
+    decision = convertEmptyToNull(decision) ; // Default to 'pending'
+
+    // ✅ Convert empty string date values to NULL (for DATE fields)
+    dob = convertEmptyToNull(dob);
+    email_sent_date = convertEmptyToNull(email_sent_date);
+    joining_date = convertEmptyToNull(joining_date);
+    relieving_date = convertEmptyToNull(relieving_date);
+    certificate_issued_date = convertEmptyToNull(certificate_issued_date);
+
+    // ✅ Ensure boolean values are stored correctly (default to `false` if missing)
+    lor_check = lor_check === true;
+    cv_check = cv_check === true;
+    noc_check = noc_check === true;
+    joined = joined === true;
+
+    // ✅ Ensure roll_number is not null (Prevent Database Error)
+    if (!roll_number) {
+      return res.status(400).json({ error: "❌ Roll Number is required and cannot be null." });
+    }
+
+    // ✅ SQL Query
     const query = `
       INSERT INTO internship_form (
-        name, roll_number, registration_id, email, phone, institute, dob, gender, state, aadhar, branch, topic,
-        period_of_training, email_sent_date, joined, joining_date, relieving_date, supervising_scientist,
-        certificate_issued_date, remarks, rejection_remarks
+        name, roll_number, lor_check, cv_check, noc_check, decision, 
+        registration_id, email, phone, institute, dob, gender, state, 
+        aadhar, branch, topic, period_of_training, email_sent_date, joined, 
+        joining_date, relieving_date, supervising_scientist, certificate_issued_date, 
+        remarks, rejection_remarks
       ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-        $13, $14, $15, $16, $17, $18, $19, $20, $21
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 
+        $16, $17, $18, $19, $20, $21, $22, $23, $24, $25
       ) RETURNING *`;
 
+    // ✅ Values to Insert
     const values = [
-      name, roll_number, registration_id, email, phone, institute, dob, formattedGender, state, aadhar, branch, topic,
-      period_of_training, email_sent_date, joined, joining_date, relieving_date, supervising_scientist,
-      certificate_issued_date, remarks, rejection_remarks
+      name, roll_number, lor_check, cv_check, noc_check, decision,
+      registration_id, email, phone, institute, dob, gender, state,
+      aadhar, branch, topic, period_of_training, email_sent_date, joined,
+      joining_date, relieving_date, supervising_scientist, certificate_issued_date,
+      remarks, rejection_remarks
     ];
 
+    console.log("\n🚀 Executing Query:", query);
+    console.log("🔍 With Values:", values);
+
+    // ✅ Execute Query
     const result = await pool.query(query, values);
-    res.status(201).json({ message: "Internship form submitted successfully", data: result.rows[0] });
+    
+    res.status(201).json({ message: "✅ Internship form submitted successfully", data: result.rows[0] });
+
   } catch (error) {
-    console.error('Error submitting internship form:', error);
+    console.error('❌ Error submitting internship form:', error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Fetch Internship Data with Filters
+
+// Fetch Internship Data
 app.get('/get-internship-data', async (req, res) => {
   try {
     const { name, registration_id, supervising_scientist, custom } = req.query;
 
-    let query = `SELECT * FROM internship_form WHERE 1=1`;
+    let query = `
+        SELECT id, name, roll_number, lor_check, cv_check, noc_check, 
+        decision, registration_id, email, phone, institute, dob, gender, state, 
+        aadhar, branch, topic, period_of_training, email_sent_date, joined, 
+        joining_date, relieving_date, supervising_scientist, certificate_issued_date, 
+        remarks, rejection_remarks
+        FROM internship_form WHERE 1=1`;
+
     let values = [];
-    
+    let conditions = [];
+
+    // ✅ Standard filters
     if (name) {
-      values.push(`%${name.trim().toLowerCase()}%`);
-      query += ` AND LOWER(TRIM(name)) LIKE $${values.length}`;
+        values.push(`%${name.trim().toLowerCase()}%`);
+        conditions.push(`LOWER(TRIM(name)) LIKE $${values.length}`);
     }
-    
+
     if (registration_id) {
-      values.push(registration_id.trim());
-      query += ` AND TRIM(registration_id) = $${values.length}`;
+        values.push(registration_id.trim());
+        conditions.push(`TRIM(registration_id) = $${values.length}`);
     }
 
     if (supervising_scientist) {
-      values.push(`%${supervising_scientist.trim().toLowerCase()}%`);
-      query += ` AND LOWER(TRIM(supervising_scientist)) LIKE $${values.length}`;
+        values.push(`%${supervising_scientist.trim().toLowerCase()}%`);
+        conditions.push(`LOWER(TRIM(supervising_scientist)) LIKE $${values.length}`);
     }
 
+    // ✅ Custom Search Fix (Ensuring no invalid empty date comparisons)
     if (custom) {
-      values.push(`%${custom.trim().toLowerCase()}%`);
-      values.push(`%${custom.trim().toLowerCase()}%`);
-      values.push(`%${custom.trim().toLowerCase()}%`);
-      values.push(`%${custom.trim().toLowerCase()}%`);
-      values.push(`%${custom.trim().toLowerCase()}%`);
-      values.push(`%${custom.trim().toLowerCase()}%`);
+        let searchFields = [
+            "roll_number", "email", "phone", "institute", "gender", "state",
+            "aadhar", "branch", "topic", "period_of_training", "remarks", "rejection_remarks"
+        ];
 
-      query += ` AND (
-        LOWER(TRIM(name)) LIKE $${values.length - 5} OR
-        LOWER(TRIM(email)) LIKE $${values.length - 4} OR
-        LOWER(TRIM(topic)) LIKE $${values.length - 3} OR
-        LOWER(TRIM(institute)) LIKE $${values.length - 2} OR
-        LOWER(TRIM(state)) LIKE $${values.length - 1} OR
-        LOWER(TRIM(branch)) LIKE $${values.length}
-      )`;
+        let dateFields = ["dob", "email_sent_date", "joining_date", "relieving_date", "certificate_issued_date"];
+
+        let customValue = `%${custom.trim().toLowerCase()}%`;
+
+        // ✅ Normal text fields
+        searchFields.forEach((field) => {
+            values.push(customValue);
+            conditions.push(`LOWER(TRIM(COALESCE(${field}, ''))) LIKE $${values.length}`);
+        });
+
+        // ✅ Properly handle date fields to avoid empty string errors
+        dateFields.forEach((field) => {
+            values.push(customValue);
+            conditions.push(`COALESCE(${field}::TEXT, '') LIKE $${values.length}`);
+        });
     }
 
-    console.log("Executing Query:", query);
-    console.log("With Values:", values);
+    // ✅ Apply conditions
+    if (conditions.length > 0) {
+        query += ` AND (${conditions.join(" OR ")})`;
+    }
+
+    // ✅ Ensure correct ID order
+    query += ` ORDER BY id ASC;`;
+
+    console.log("\n🚀 Executing Query:\n", query);
+    console.log("🔍 With Values:\n", values);
 
     const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
-      console.log("No matching data found.");
+        console.log("⚠️ No matching data found.");
     }
 
     res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching internship data:', error);
+    console.error('❌ Error fetching internship data:', error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
+// Generate Report
 app.get('/generate-report/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -238,6 +297,7 @@ app.get('/generate-report/:id', async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 // Serve Frontend Static Files

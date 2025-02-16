@@ -53,7 +53,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="results.html">
+                            <a class="nav-link" href="update.html">
                                 <i class="bi bi-pencil-square"></i> Update
                             </a>
                         </li>
@@ -94,7 +94,11 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Roll Number</th>
-                                    <th>Registration ID</th>
+                                    <th>LOR</th>
+                                    <th>CV</th>
+                                    <th>NOC</th>
+                                    <th>Decision</th>
+                                    <th>Registration ID</th>    
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Institute</th>
@@ -112,7 +116,6 @@
                                     <th>Supervising Scientist</th>
                                     <th>Certificate Issued Date</th>
                                     <th>Remarks</th>
-                                    <th>Decision</th>
                                     <th>Rejection Remarks</th>
                                     <th>Actions</th>
                                 </tr>
@@ -132,48 +135,57 @@
             let url = '/get-internship-data';
             let queryParams = new URLSearchParams(filters).toString();
             if (queryParams) url += '?' + queryParams;
-    
+        
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Failed to fetch data");
-    
+        
                 const data = await response.json();
                 populateResultsTable(data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
-    
+        
         function populateResultsTable(data) {
             const tableBody = document.getElementById('resultsTableBody');
-            tableBody.innerHTML = '';
-    
+            tableBody.innerHTML = ''; // ✅ Clear old data
+        
             data.forEach(item => {
+                console.log(item); // ✅ Debugging log: Check data from API
+        
+                let decisionLabel = item.decision === 'accept' 
+                    ? `<span class="badge bg-success">Accepted</span>` 
+                    : `<span class="badge bg-danger">Rejected</span>`;
+        
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item.id}</td>
                     <td>${item.name}</td>
                     <td>${item.roll_number}</td>
-                    <td>${item.registration_id}</td>
-                    <td>${item.email}</td>
-                    <td>${item.phone}</td>
-                    <td>${item.institute}</td>
-                    <td>${item.dob}</td>
-                    <td>${item.gender}</td>
-                    <td>${item.state}</td>
-                    <td>${item.aadhar}</td>
-                    <td>${item.branch}</td>
-                    <td>${item.topic}</td>
-                    <td>${item.period_of_training}</td>
-                    <td>${item.email_sent_date}</td>
+                    <td>${item.lor_check ? "Yes" : "No"}</td>
+                    <td>${item.cv_check ? "Yes" : "No"}</td>
+                    <td>${item.noc_check ? "Yes" : "No"}</td>
+                    <td>${decisionLabel}</td> <!-- ✅ Ensure this is correct -->
+                    <td>${item.registration_id || "N/A"}</td>
+                    <td>${item.email || "N/A"}</td>
+                    <td>${item.phone || "N/A"}</td>
+                    <td>${item.institute || "N/A"}</td>
+                    <td>${item.dob || "N/A"}</td>
+                    <td>${item.gender || "N/A"}</td>
+                    <td>${item.state || "N/A"}</td>
+                    <td>${item.aadhar || "N/A"}</td>
+                    <td>${item.branch || "N/A"}</td>
+                    <td>${item.topic || "N/A"}</td>
+                    <td>${item.period_of_training || "N/A"}</td>
+                    <td>${item.email_sent_date || "N/A"}</td>
                     <td>${item.joined ? "Yes" : "No"}</td>
-                    <td>${item.joining_date}</td>
-                    <td>${item.relieving_date}</td>
-                    <td>${item.supervising_scientist}</td>
-                    <td>${item.certificate_issued_date}</td>
-                    <td>${item.remarks}</td>
-                    <td>${item.decision}</td>
-                    <td>${item.rejection_remarks}</td>
+                    <td>${item.joining_date || "N/A"}</td>
+                    <td>${item.relieving_date || "N/A"}</td>
+                    <td>${item.supervising_scientist || "N/A"}</td>
+                    <td>${item.certificate_issued_date || "N/A"}</td>
+                    <td>${item.remarks || "N/A"}</td>
+                    <td>${item.rejection_remarks || "N/A"}</td>
                     <td>
                         <button class="btn btn-sm btn-success" onclick="generateReport(${item.id})">Generate Report</button>
                     </td>
@@ -181,6 +193,10 @@
                 tableBody.appendChild(row);
             });
         }
+        
+        
+        
+          
     
         function applyFilter() {
             const name = document.getElementById('nameFilter').value.trim();
