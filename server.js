@@ -110,7 +110,7 @@ app.post('/submit-internship-form', async (req, res) => {
 
     name = convertEmptyToNull(name);
     roll_number = convertEmptyToNull(roll_number);
-    registration_id = convertEmptyToNull(registration_id);
+    registration_id = req.body.registrationId ? req.body.registrationId.trim() : null;
     email = convertEmptyToNull(email);
     phone = convertEmptyToNull(phone);
     institute = convertEmptyToNull(institute);
@@ -119,24 +119,31 @@ app.post('/submit-internship-form', async (req, res) => {
     aadhar = convertEmptyToNull(aadhar);
     branch = convertEmptyToNull(branch);
     topic = convertEmptyToNull(topic);
-    period_of_training = convertEmptyToNull(period_of_training);
-    supervising_scientist = convertEmptyToNull(supervising_scientist);
+    period_of_training = req.body.periodOfTraining ? req.body.periodOfTraining.trim() : null;
+    supervising_scientist = req.body.supervisingScientist?.trim() || null;
     remarks = convertEmptyToNull(remarks);
-    rejection_remarks = convertEmptyToNull(rejection_remarks);
+    rejection_remarks = req.body.rejectionRemarks && req.body.rejectionRemarks.trim() !== '' 
+  ? req.body.rejectionRemarks.trim() 
+  : null;
     decision = convertEmptyToNull(decision) ; // Default to 'pending'
 
     // ✅ Convert empty string date values to NULL (for DATE fields)
     dob = convertEmptyToNull(dob);
-    email_sent_date = convertEmptyToNull(email_sent_date);
-    joining_date = convertEmptyToNull(joining_date);
-    relieving_date = convertEmptyToNull(relieving_date);
-    certificate_issued_date = convertEmptyToNull(certificate_issued_date);
+    const parseDate = (dateStr) => (dateStr && dateStr.trim() !== "" ? dateStr : null);
+
+    email_sent_date = parseDate(req.body.emailSentDate);
+    joining_date = parseDate(req.body.joiningDate);
+    relieving_date = parseDate(req.body.relievingDate);
+    certificate_issued_date = parseDate(req.body.certificateIssuedDate);
 
     // ✅ Ensure boolean values are stored correctly (default to `false` if missing)
-    lor_check = lor_check === true;
-    cv_check = cv_check === true;
-    noc_check = noc_check === true;
-    joined = joined === true;
+    lor_check = req.body.lorCheck === 'on';
+    cv_check = req.body.cvCheck === 'on';
+    noc_check = req.body.nocCheck === 'on';
+    joined = req.body.joined === "true";
+
+
+
 
     // ✅ Ensure roll_number is not null (Prevent Database Error)
     if (!roll_number) {
