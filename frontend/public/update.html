@@ -161,7 +161,7 @@
         function populateResultsTable(data) {
             const tableBody = document.getElementById('resultsTableBody');
             tableBody.innerHTML = '';
-
+        
             data.forEach(item => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -176,60 +176,102 @@
                     <td>${item.institute}</td>
                     <td>
                         <button class="btn btn-warning" onclick="editEntry(${item.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteEntry(${item.id})">Delete</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
         }
-
-        async function editEntry(id) {
-            try {
-                console.log(`🔍 Fetching data for ID: ${id}`); // Debugging log
-                const response = await fetch(`/get-internship-data?student_id=${id}`, {
-                    method: 'GET',
-                    headers: {
-                        'Cache-Control': 'no-cache' // Prevent caching issues
-                    }
+        
+        function editEntry(id) {
+            fetch(`/get-internship/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("editId").value = data.id;
+                    document.getElementById("editName").value = data.name;
+                    document.getElementById("editRollNumber").value = data.roll_number;
+                    document.getElementById("editLOR").checked = data.lor_check;
+                    document.getElementById("editCV").checked = data.cv_check;
+                    document.getElementById("editNOC").checked = data.noc_check;
+                    document.getElementById("editEmail").value = data.email;
+                    document.getElementById("editPhone").value = data.phone;
+                    document.getElementById("editInstitute").value = data.institute;
+                    document.getElementById("editBranch").value = data.branch;
+                    document.getElementById("editTopic").value = data.topic;
+                    document.getElementById("editJoiningDate").value = data.joining_date;
+                    document.getElementById("editRelievingDate").value = data.relieving_date;
+                    document.getElementById("editSupervisingScientist").value = data.supervising_scientist;
+                    document.getElementById("editRemarks").value = data.remarks;
+        
+                    // Show the modal
+                    let modal = new bootstrap.Modal(document.getElementById('editModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error("🚨 Error fetching internship data for editing:", error);
+                    alert("Error fetching internship data. Please try again.");
                 });
+        }
         
-                if (!response.ok) throw new Error("Failed to fetch student data");
+
+        async function deleteEntry(id) {
+            if (!confirm("Are you sure you want to delete this record?")) return;
         
-                const data = await response.json();
-                console.log("📌 Data received:", data); // Debugging log
+            try {
+                const response = await fetch(`/delete-internship/${id}`, { method: 'DELETE' });
         
-                if (data.length === 0) {
-                    alert("No record found for this ID!");
-                    return;
-                }
+                if (!response.ok) throw new Error("Failed to delete internship record");
         
-                const student = data[0];
-        
-                // Fill in the form with the selected student's data
-                document.getElementById('editId').value = student.id;
-                document.getElementById('editName').value = student.name;
-                document.getElementById('editRollNumber').value = student.roll_number;
-                document.getElementById('editLOR').checked = student.lor_check;
-                document.getElementById('editCV').checked = student.cv_check;
-                document.getElementById('editNOC').checked = student.noc_check;
-                document.getElementById('editEmail').value = student.email;
-                document.getElementById('editPhone').value = student.phone;
-                document.getElementById('editInstitute').value = student.institute;
-                document.getElementById('editBranch').value = student.branch;
-                document.getElementById('editTopic').value = student.topic;
-                document.getElementById('editJoiningDate').value = student.joining_date || '';
-                document.getElementById('editRelievingDate').value = student.relieving_date || '';
-                document.getElementById('editSupervisingScientist').value = student.supervising_scientist || '';
-                document.getElementById('editRemarks').value = student.remarks || '';
-        
-                // Open the modal
-                const modal = new bootstrap.Modal(document.getElementById('editModal'));
-                modal.show();
-        
+                alert("✅ Internship record deleted successfully!");
+                fetchInternshipData(); // Refresh table
             } catch (error) {
-                console.error("🚨 Error loading student data:", error);
-                alert("Failed to load data. Check console for details.");
+                console.error("🚨 Error deleting record:", error);
+                alert("Error deleting record. Please try again.");
             }
         }
+        
+
+        document.getElementById("editForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+        
+            const updatedData = {
+                id: document.getElementById("editId").value,
+                name: document.getElementById("editName").value,
+                roll_number: document.getElementById("editRollNumber").value,
+                lor_check: document.getElementById("editLOR").checked,
+                cv_check: document.getElementById("editCV").checked,
+                noc_check: document.getElementById("editNOC").checked,
+                email: document.getElementById("editEmail").value,
+                phone: document.getElementById("editPhone").value,
+                institute: document.getElementById("editInstitute").value,
+                branch: document.getElementById("editBranch").value,
+                topic: document.getElementById("editTopic").value,
+                joining_date: document.getElementById("editJoiningDate").value,
+                relieving_date: document.getElementById("editRelievingDate").value,
+                supervising_scientist: document.getElementById("editSupervisingScientist").value,
+                remarks: document.getElementById("editRemarks").value
+            };
+        
+            try {
+                const response = await fetch(`/update-internship/${updatedData.id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+        
+                if (!response.ok) throw new Error("Failed to update internship record");
+        
+                alert("✅ Internship record updated successfully!");
+                fetchInternshipData();
+                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+            } catch (error) {
+                console.error("🚨 Error updating record:", error);
+                alert("Error updating record. Please try again.");
+            }
+        });
+        
         
 
         document.addEventListener('DOMContentLoaded', fetchInternshipData);
