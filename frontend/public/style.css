@@ -32,9 +32,20 @@ body {
     align-items: center;
 }
 
-.container {
+.logincontainer {
     width: 80%; 
     max-width: 500px; 
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    margin: 300px auto 0 auto;
+}
+
+
+.container {
+    width: 80%; 
+    max-width: 800px; 
     background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
