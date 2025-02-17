@@ -1,26 +1,16 @@
-const students = [
-    {
-        name: "John Doe",
-        rollNumber: "12345",
-        institute: "IIT Delhi",
-        branch: "Computer Science",
-        topic: "Machine Learning",
-        duration: "4 weeks"
-    },
-    {
-        name: "Jane Smith",
-        rollNumber: "67890",
-        institute: "NIT Trichy",
-        branch: "Electronics",
-        topic: "IoT",
-        duration: "6 weeks"
-    }
-];
+function fetchStudents() {
+    fetch('/api/students')
+        .then(response => response.json())
+        .then(data => {
+            populateStudentsTable(data);
+        })
+        .catch(error => console.error('Error fetching students:', error));
+}
 
 // Function to populate the table with student data
 function populateStudentsTable(data) {
     const tableBody = document.getElementById("studentsTableBody");
-    tableBody.innerHTML = ""; // Clear existing rows
+    tableBody.innerHTML = ""; 
 
     data.forEach((student, index) => {
         const row = document.createElement("tr");
@@ -31,25 +21,77 @@ function populateStudentsTable(data) {
             <td>${student.branch}</td>
             <td>${student.topic}</td>
             <td>${student.duration}</td>
-            <td><button class='btn btn-primary btn-sm' onclick='generateCertificate(${index})'>Generate PDF</button></td>`;
+            <td><button class='btn btn-primary btn-sm' onclick='generateCertificate("${student.id}")'>Generate PDF</button></td>`;
         tableBody.appendChild(row);
     });
 }
 
 // Function to generate a certificate for a single student
-function generateCertificate(index) {
-    const student = students[index];
-    
-    // Send request to backend to generate PDF (mocked here)
-    alert(`Generating certificate for ${student.name}`);
+function generateCertificate(studentId) {
+    fetch(`/api/generate-certificate/${studentId}`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(`Certificate generated for ${data.name}`);
+        })
+        .catch(error => console.error('Error generating certificate:', error));
 }
 
 // Function to generate certificates for all students
-document.getElementById("generateAllCertificates").addEventListener("click", () => {
-    students.forEach((_, index) => generateCertificate(index));
+function generateAllCertificates() {
+    fetch('/api/generate-all-certificates', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(`Generated ${data.count} certificates`);
+        })
+        .catch(error => console.error('Error generating certificates:', error));
+}
+
+// Add event listener for the "Generate All Certificates" button
+document.addEventListener("DOMContentLoaded", () => {
+    const generateAllButton = document.getElementById("generateAllCertificates");
+    if (generateAllButton) {
+        generateAllButton.addEventListener("click", generateAllCertificates);
+    }
 });
 
-// Populate the table on page load
-document.addEventListener("DOMContentLoaded", () => {
-    populateStudentsTable(students);
-});
+// Fetch and populate the table on page load
+document.addEventListener("DOMContentLoaded", fetchStudents);
+
+// Periodically update the table (e.g., every 30 seconds)
+setInterval(fetchStudents, 30000);
+
+// Error handling function
+function handleFetchError(error, message) {
+    console.error(message, error);
+    alert(`An error occurred: ${message}. Please try again later.`);
+}
+
+// Add loading indicator
+function showLoading() {
+    const loadingIndicator = document.createElement("div");
+    loadingIndicator.id = "loadingIndicator";
+    loadingIndicator.textContent = "Loading...";
+    document.body.appendChild(loadingIndicator);
+}
+
+function hideLoading() {
+    const loadingIndicator = document.getElementById("loadingIndicator");
+    if (loadingIndicator) {
+        loadingIndicator.remove();
+    }
+}
+
+// Update fetchStudents function to include loading indicator
+function fetchStudents() {
+    showLoading();
+    fetch('/api/students')
+        .then(response => response.json())
+        .then(data => {
+            populateStudentsTable(data);
+            hideLoading();
+        })
+        .catch(error => {
+            handleFetchError(error, "Error fetching students");
+            hideLoading();
+        });
+}
