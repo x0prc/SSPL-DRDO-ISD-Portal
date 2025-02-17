@@ -308,60 +308,78 @@ app.get('/generate-report/:id', async (req, res) => {
 // Update 
 app.put('/update-internship/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    let {
-      name, roll_number, lor_check, cv_check, noc_check,
-      registration_id, email, phone, institute, dob, gender,
-      state, aadhar, branch, topic, period_of_training,
-      email_sent_date, joined, joining_date, relieving_date,
-      supervising_scientist, certificate_issued_date, remarks,
-      rejection_remarks, decision
-    } = req.body;
+      const { id } = req.params;
+      let {
+          name, roll_number, lor_check, cv_check, noc_check,
+          decision, registration_id, email, phone, institute, dob, gender,
+          state, aadhar, branch, topic, period_of_training,
+          email_sent_date, joined, joining_date, relieving_date,
+          supervising_scientist, certificate_issued_date, remarks
+      } = req.body;
 
-    // ✅ Convert empty strings to NULL
-    const convertEmptyToNull = (value) => (value === "" ? null : value);
+      // Convert empty strings to NULL (except for `decision`)
+      const convertEmptyToNull = (value) => (value === "" ? null : value);
 
-    // ✅ Convert date strings correctly
-    const parseDate = (dateStr) => (dateStr && dateStr.trim() !== "" ? dateStr : null);
+      // Normalize `decision` value to match allowed PostgreSQL values
+      if (decision) {
+          decision = decision.toLowerCase().trim();
+      }
 
-    // ✅ Ensure boolean values are stored correctly
-    lor_check = req.body.lorCheck === 'on';
-    cv_check = req.body.cvCheck === 'on';
-    noc_check = req.body.nocCheck === 'on';
-    joined = req.body.joined === "true";
+      const validDecisions = ["accept", "reject", "pending"];
+      if (decision && !validDecisions.includes(decision)) {
+          return res.status(400).json({ error: "Invalid decision value! Allowed values: accept, reject, pending" });
+      }
 
-    const query = `
+      // Convert date strings correctly
+      const parseDate = (dateStr) => (dateStr && dateStr.trim() !== "" ? dateStr : null);
+
+      // Ensure boolean values are stored correctly
+      lor_check = req.body.lorCheck === 'on';
+      cv_check = req.body.cvCheck === 'on';
+      noc_check = req.body.nocCheck === 'on';
+      joined = req.body.joined === "true";
+
+      // Validate gender field
+      const validGenders = ["male", "female"];
+      if (gender && !validGenders.includes(gender.toLowerCase())) {
+          return res.status(400).json({ error: "Invalid gender value! Allowed values: male, female" });
+      }
+      gender = gender ? gender.toLowerCase() : null;
+
+      // Update Query
+      const query = `
       UPDATE internship_form SET
-        name=$1, roll_number=$2, lor_check=$3, cv_check=$4, noc_check=$5, decision=$6,
-        registration_id=$7, email=$8, phone=$9, institute=$10, dob=$11, gender=$12, state=$13, 
-        aadhar=$14, branch=$15, topic=$16, period_of_training=$17, email_sent_date=$18, joined=$19, 
-        joining_date=$20, relieving_date=$21, supervising_scientist=$22, certificate_issued_date=$23, 
-        remarks=$24, rejection_remarks=$25
-      WHERE id=$26 RETURNING *`;
+          name=$1, roll_number=$2, lor_check=$3, cv_check=$4, noc_check=$5, decision=COALESCE($6, 'Pending'),
+          registration_id=$7,email=$8, phone=$9, institute=$10, dob=$11, gender=$12, state=$13, aadhar=$14, branch=$15, topic=$16, 
+          period_of_training=$17, email_sent_date=$18, joined=$19, joining_date=$20, relieving_date=$21,
+          supervising_scientist=$22, certificate_issued_date=$23, remarks=$24
+      WHERE id=$25 RETURNING *`;
 
-    const values = [
-      convertEmptyToNull(name), convertEmptyToNull(roll_number), lor_check, cv_check, noc_check, decision,
-      convertEmptyToNull(registration_id), convertEmptyToNull(email), convertEmptyToNull(phone),
-      convertEmptyToNull(institute), convertEmptyToNull(dob), convertEmptyToNull(gender), convertEmptyToNull(state),
-      convertEmptyToNull(aadhar), convertEmptyToNull(branch), convertEmptyToNull(topic), convertEmptyToNull(period_of_training),
-      parseDate(email_sent_date), joined, parseDate(joining_date), parseDate(relieving_date),
-      convertEmptyToNull(supervising_scientist), parseDate(certificate_issued_date),
-      convertEmptyToNull(remarks), convertEmptyToNull(rejection_remarks), id
-    ];
+      // Prepare Values for Query
+      const values = [
+          convertEmptyToNull(name), convertEmptyToNull(roll_number), lor_check, cv_check, noc_check, decision,
+          convertEmptyToNull(registration_id), convertEmptyToNull(dob), gender, convertEmptyToNull(state),
+          convertEmptyToNull(aadhar), convertEmptyToNull(branch), convertEmptyToNull(topic), convertEmptyToNull(period_of_training),
+          parseDate(email_sent_date), joined, parseDate(joining_date), parseDate(relieving_date),
+          convertEmptyToNull(supervising_scientist), parseDate(certificate_issued_date), convertEmptyToNull(remarks),
+          convertEmptyToNull(email), convertEmptyToNull(phone), convertEmptyToNull(institute), id
+      ];
 
-    const result = await pool.query(query, values);
+      // Execute Query
+      const result = await pool.query(query, values);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Internship record not found" });
-    }
+      if (result.rowCount === 0) {
+          return res.status(404).json({ error: "Internship record not found" });
+      }
 
-    res.status(200).json({ message: "✅ Internship data updated successfully", data: result.rows[0] });
+      res.status(200).json({ message: "✅ Internship data updated successfully", data: result.rows[0] });
 
   } catch (error) {
-    console.error("❌ Error updating internship form:", error);
-    res.status(500).json({ error: "Internal server error" });
+      console.error("❌ Error updating internship form:", error);
+      res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 //Delete 
 app.delete('/delete-internship/:id', async (req, res) => {

@@ -36,12 +36,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="update.html">
+                            <a class="nav-link active" href="update.html">
                                 <i class="bi bi-pencil-square"></i> Update
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="results.html">
+                            <a class="nav-link" href="results.html">
                                 <i class="bi bi-file-earmark-text"></i> Results
                             </a>
                         </li>
@@ -76,7 +76,10 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="resultsTableBody"></tbody>
+                            <tbody id="resultsTableBody">
+                                <tr><td colspan="10" class="text-center">Loading data...</td></tr>
+                            </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -97,50 +100,95 @@
                         <input type="hidden" id="editId">
                         <div class="row">
                             <div class="col-md-6">
+                                <!-- Existing fields -->
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" id="editName" required>
-
+                        
                                 <label class="form-label">Roll Number</label>
                                 <input type="text" class="form-control" id="editRollNumber" required>
-
+                        
                                 <label class="form-label">LOR</label>
                                 <input type="checkbox" id="editLOR">
-
+                        
                                 <label class="form-label">CV</label>
                                 <input type="checkbox" id="editCV">
-
+                        
                                 <label class="form-label">NOC</label>
                                 <input type="checkbox" id="editNOC">
+                        
+                                <label class="form-label">Decision</label>
+                                <select class="form-control" id="editDecision">
+                                    <option value="Accept">Accept</option>
+                                    <option value="Reject">Reject</option>
+                                    <option value="Pending">Pending</option>
+                                </select>
 
+                                <label class="form-label">Registration ID</label>
+                                <input type="text" class="form-control" id="editRegistrationId">
+                        
                                 <label class="form-label">Email</label>
                                 <input type="email" class="form-control" id="editEmail" required>
-
+                        
                                 <label class="form-label">Phone</label>
                                 <input type="text" class="form-control" id="editPhone" required>
-
+                        
                                 <label class="form-label">Institute</label>
                                 <input type="text" class="form-control" id="editInstitute" required>
+                        
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="editDOB">
+                        
+                                <label class="form-label">Gender</label>
+                                <select class="form-control" id="editGender">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                        
+                                <label class="form-label">State</label>
+                                <input type="text" class="form-control" id="editState">
+                        
+                                <label class="form-label">Aadhar</label>
+                                <input type="text" class="form-control" id="editAadhar">
+                        
                             </div>
                             <div class="col-md-6">
+                                <!-- Existing fields -->
                                 <label class="form-label">Branch</label>
                                 <input type="text" class="form-control" id="editBranch" required>
-
+                        
                                 <label class="form-label">Topic</label>
                                 <input type="text" class="form-control" id="editTopic">
+                                
+                                <label class="form-label">Period of Training</label>
+                                <input type="text" class="form-control" id="editPeriodOfTraining">
+                        
+                                <label class="form-label">Email Sent Date</label>
+                                <input type="date" class="form-control" id="editEmailSentDate">
+
+                                <label class="form-label">Joined</label>
+                                <input type="checkbox" class="form-control" id="editJoined">
 
                                 <label class="form-label">Joining Date</label>
                                 <input type="date" class="form-control" id="editJoiningDate">
-
+                        
                                 <label class="form-label">Relieving Date</label>
                                 <input type="date" class="form-control" id="editRelievingDate">
-
+                        
                                 <label class="form-label">Supervising Scientist</label>
                                 <input type="text" class="form-control" id="editSupervisingScientist">
 
+                                <label class="form-label">Certificate Issued Date</label>
+                                <input type="date" class="form-control" id="editCertificateIssuedDate">
+                        
                                 <label class="form-label">Remarks</label>
-                                <textarea class="form-control" id="editRemarks"></textarea>
+                                <textarea class="form-control" id="editRemarks"></textarea>        
+                        
+                                <label class="form-label">Rejection Remarks</label>
+                                <textarea class="form-control" id="editRejectionRemarks"></textarea>
                             </div>
                         </div>
+                        
                         <button type="submit" class="btn btn-primary mt-3">Update</button>
                     </form>
                 </div>
@@ -161,6 +209,11 @@
         function populateResultsTable(data) {
             const tableBody = document.getElementById('resultsTableBody');
             tableBody.innerHTML = '';
+        
+            if (data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="10" class="text-center">No internship records found.</td></tr>`;
+                return;
+            }
         
             data.forEach(item => {
                 const row = document.createElement('tr');
@@ -183,26 +236,39 @@
             });
         }
         
+        
         function editEntry(id) {
             fetch(`/get-internship/${id}`)
                 .then(response => response.json())
                 .then(data => {
+                    // Populate the fields with the existing data
                     document.getElementById("editId").value = data.id;
                     document.getElementById("editName").value = data.name;
                     document.getElementById("editRollNumber").value = data.roll_number;
                     document.getElementById("editLOR").checked = data.lor_check;
                     document.getElementById("editCV").checked = data.cv_check;
                     document.getElementById("editNOC").checked = data.noc_check;
+                    document.getElementById("editDecision").value = data.decision || ""; // Ensure there's a fallback value
+                    document.getElementById("editRegistrationId").value = data.registration_id || "";
                     document.getElementById("editEmail").value = data.email;
                     document.getElementById("editPhone").value = data.phone;
                     document.getElementById("editInstitute").value = data.institute;
+                    document.getElementById("editDOB").value = data.dob || ""; // If dob is empty, it'll be blank
+                    document.getElementById("editGender").value = data.gender || "Male"; // Default to 'Male' if no data
+                    document.getElementById("editState").value = data.state || "";
+                    document.getElementById("editAadhar").value = data.aadhar || "";
                     document.getElementById("editBranch").value = data.branch;
                     document.getElementById("editTopic").value = data.topic;
-                    document.getElementById("editJoiningDate").value = data.joining_date;
-                    document.getElementById("editRelievingDate").value = data.relieving_date;
+                    document.getElementById("editPeriodOfTraining").value = data.period_of_training;
+                    document.getElementById("editEmailSentDate").value = data.email_sent_date || "";
+                    document.getElementById("editJoined").checked = data.joined === "true"; // Handle as boolean
+                    document.getElementById("editJoiningDate").value = data.joining_date ? data.joining_date.split('T')[0] : "";
+                    document.getElementById("editRelievingDate").value = data.relieving_date ? data.relieving_date.split('T')[0] : "";
                     document.getElementById("editSupervisingScientist").value = data.supervising_scientist;
+                    document.getElementById("editCertificateIssuedDate").value = data.certificate_issued_date || "";
                     document.getElementById("editRemarks").value = data.remarks;
-        
+                    document.getElementById("editRejectionRemarks").value = data.rejection_remarks || "";
+                    
                     // Show the modal
                     let modal = new bootstrap.Modal(document.getElementById('editModal'));
                     modal.show();
@@ -212,6 +278,7 @@
                     alert("Error fetching internship data. Please try again.");
                 });
         }
+        
         
 
         async function deleteEntry(id) {
@@ -233,6 +300,21 @@
 
         document.getElementById("editForm").addEventListener("submit", async function (e) {
             e.preventDefault();
+            
+            const aadhar = document.getElementById("editAadhar").value;
+            const aadharRegex = /^[0-9]{12}$/;
+            if (!aadharRegex.test(aadhar)) {
+                alert("Aadhar number must be exactly 12 digits.");
+                return;
+            }
+
+            let decision = document.getElementById("editDecision").value.toLowerCase(); // ✅ Convert to lowercase
+            
+            const validDecisions = ["accept", "reject", "pending"];
+            if (!validDecisions.includes(decision)) {
+                alert("Invalid decision value! Please select Accept, Reject, or Pending.");
+                return;
+            }
         
             const updatedData = {
                 id: document.getElementById("editId").value,
@@ -241,15 +323,28 @@
                 lor_check: document.getElementById("editLOR").checked,
                 cv_check: document.getElementById("editCV").checked,
                 noc_check: document.getElementById("editNOC").checked,
-                email: document.getElementById("editEmail").value,
-                phone: document.getElementById("editPhone").value,
-                institute: document.getElementById("editInstitute").value,
+                decision: decision,  // Already converted to lowercase
+                registration_id: document.getElementById("editRegistrationId").value,
+                email: document.getElementById("editEmail").value,  // Add missing email field
+                phone: document.getElementById("editPhone").value,  // Add missing phone field
+                institute: document.getElementById("editInstitute").value,  // Add missing institute field
+                dob: document.getElementById("editDOB").value,
+                gender: document.getElementById("editGender").value,
+                state: document.getElementById("editState").value,
+                aadhar: document.getElementById("editAadhar").value,
                 branch: document.getElementById("editBranch").value,
                 topic: document.getElementById("editTopic").value,
+                period_of_training: document.getElementById("editPeriodOfTraining").value,
+                email_sent_date: document.getElementById("editEmailSentDate").value,
+                joined: document.getElementById("editJoined").checked ? true : false,
                 joining_date: document.getElementById("editJoiningDate").value,
                 relieving_date: document.getElementById("editRelievingDate").value,
                 supervising_scientist: document.getElementById("editSupervisingScientist").value,
-                remarks: document.getElementById("editRemarks").value
+                certificate_issued_date: document.getElementById("editCertificateIssuedDate").value,
+                remarks: document.getElementById("editRemarks").value,
+                rejection_remarks: document.getElementById("editRejectionRemarks").value,
+                
+                
             };
         
             try {
@@ -264,16 +359,14 @@
                 if (!response.ok) throw new Error("Failed to update internship record");
         
                 alert("✅ Internship record updated successfully!");
-                fetchInternshipData();
-                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                fetchInternshipData();  // Refresh the data after successful update
+                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();  // Close modal
             } catch (error) {
                 console.error("🚨 Error updating record:", error);
                 alert("Error updating record. Please try again.");
             }
         });
         
-        
-
         document.addEventListener('DOMContentLoaded', fetchInternshipData);
     </script>
 
