@@ -306,79 +306,105 @@ app.get('/generate-report/:id', async (req, res) => {
 });
 
 // Update 
+// Update the parseDate function to handle invalid or missing dates better
+const parseDate = (dateStr) => {
+  if (!dateStr || dateStr.trim() === "") return null;  // Return null if empty or invalid
+  const parsedDate = new Date(dateStr);
+  if (isNaN(parsedDate)) return null;  // Check if the date is invalid
+  return parsedDate.toISOString().split("T")[0]; // Return formatted date (YYYY-MM-DD)
+};
+
 app.put('/update-internship/:id', async (req, res) => {
-  try {
-      const { id } = req.params;
-      let {
-          name, roll_number, lor_check, cv_check, noc_check,
-          decision, registration_id, email, phone, institute, dob, gender,
-          state, aadhar, branch, topic, period_of_training,
-          email_sent_date, joined, joining_date, relieving_date,
-          supervising_scientist, certificate_issued_date, remarks
-      } = req.body;
+    try {
+        const { id } = req.params;
+        let {
+            name, roll_number, lor_check, cv_check, noc_check,
+            decision, registration_id, email, phone, institute, dob, gender,
+            state, aadhar, branch, topic, period_of_training,
+            email_sent_date, joined, joining_date, relieving_date,
+            supervising_scientist, certificate_issued_date, remarks
+        } = req.body;
 
-      // Convert empty strings to NULL (except for `decision`)
-      const convertEmptyToNull = (value) => (value === "" ? null : value);
+        // Convert empty strings to NULL (except for `decision`)
+        const convertEmptyToNull = (value) => (value === "" || value === undefined ? null : value);
 
-      // Normalize `decision` value to match allowed PostgreSQL values
-      if (decision) {
-          decision = decision.toLowerCase().trim();
-      }
+        // Normalize `decision` value to match allowed PostgreSQL values
+        if (decision) {
+            decision = decision.toLowerCase().trim();
+        }
 
-      const validDecisions = ["accept", "reject", "pending"];
-      if (decision && !validDecisions.includes(decision)) {
-          return res.status(400).json({ error: "Invalid decision value! Allowed values: accept, reject, pending" });
-      }
+        const validDecisions = ["accept", "reject", "pending"];
+        if (decision && !validDecisions.includes(decision)) {
+            return res.status(400).json({ error: "Invalid decision value! Allowed values: accept, reject, pending" });
+        }
 
-      // Convert date strings correctly
-      const parseDate = (dateStr) => (dateStr && dateStr.trim() !== "" ? dateStr : null);
+        // Ensure boolean values are stored correctly
+        lor_check = req.body.lorCheck === 'on' ? true : false;
+        cv_check = req.body.cvCheck === 'on' ? true : false;
+        noc_check = req.body.nocCheck === 'on' ? true : false;
+        joined = req.body.joined === "true" ? true : false;
 
-      // Ensure boolean values are stored correctly
-      lor_check = req.body.lorCheck === 'on';
-      cv_check = req.body.cvCheck === 'on';
-      noc_check = req.body.nocCheck === 'on';
-      joined = req.body.joined === "true";
+        // Parse dates correctly
+        dob = parseDate(dob);
+        email_sent_date = parseDate(email_sent_date);
+        certificate_issued_date = parseDate(certificate_issued_date);
+        joining_date = parseDate(joining_date);
+        relieving_date = parseDate(relieving_date);
 
-      // Validate gender field
-      const validGenders = ["male", "female"];
-      if (gender && !validGenders.includes(gender.toLowerCase())) {
-          return res.status(400).json({ error: "Invalid gender value! Allowed values: male, female" });
-      }
-      gender = gender ? gender.toLowerCase() : null;
+        // Validate gender field
+        const validGenders = ["male", "female"];
+        if (gender && !validGenders.includes(gender.toLowerCase())) {
+            return res.status(400).json({ error: "Invalid gender value! Allowed values: male, female" });
+        }
+        gender = gender ? gender.toLowerCase() : null;
 
-      // Update Query
-      const query = `
-      UPDATE internship_form SET
-          name=$1, roll_number=$2, lor_check=$3, cv_check=$4, noc_check=$5, decision=COALESCE($6, 'Pending'),
-          registration_id=$7,email=$8, phone=$9, institute=$10, dob=$11, gender=$12, state=$13, aadhar=$14, branch=$15, topic=$16, 
-          period_of_training=$17, email_sent_date=$18, joined=$19, joining_date=$20, relieving_date=$21,
-          supervising_scientist=$22, certificate_issued_date=$23, remarks=$24
-      WHERE id=$25 RETURNING *`;
+        // Prepare Query
+        const query = `
+        UPDATE internship_form SET
+            name=$1, roll_number=$2, lor_check=$3, cv_check=$4, noc_check=$5, decision=COALESCE($6, 'Pending'),
+            registration_id=$7,email=$8, phone=$9, institute=$10, dob=$11, gender=$12, state=$13, aadhar=$14, branch=$15, topic=$16, 
+            period_of_training=$17, email_sent_date=$18, joined=$19, joining_date=$20, relieving_date=$21,
+            supervising_scientist=$22, certificate_issued_date=$23, remarks=$24
+        WHERE id=$25 RETURNING *`;
 
-      // Prepare Values for Query
-      const values = [
-          convertEmptyToNull(name), convertEmptyToNull(roll_number), lor_check, cv_check, noc_check, decision,
-          convertEmptyToNull(registration_id), convertEmptyToNull(dob), gender, convertEmptyToNull(state),
-          convertEmptyToNull(aadhar), convertEmptyToNull(branch), convertEmptyToNull(topic), convertEmptyToNull(period_of_training),
-          parseDate(email_sent_date), joined, parseDate(joining_date), parseDate(relieving_date),
-          convertEmptyToNull(supervising_scientist), parseDate(certificate_issued_date), convertEmptyToNull(remarks),
-          convertEmptyToNull(email), convertEmptyToNull(phone), convertEmptyToNull(institute), id
-      ];
+        // Prepare Values for Query
+        const values = [
+            convertEmptyToNull(name), convertEmptyToNull(roll_number), lor_check, cv_check, noc_check, decision,
+            convertEmptyToNull(registration_id), convertEmptyToNull(email), convertEmptyToNull(phone), convertEmptyToNull(institute),
+            dob, gender, convertEmptyToNull(state), convertEmptyToNull(aadhar), convertEmptyToNull(branch),
+            convertEmptyToNull(topic), convertEmptyToNull(period_of_training), email_sent_date, joined,
+            joining_date, relieving_date, convertEmptyToNull(supervising_scientist),
+            certificate_issued_date, convertEmptyToNull(remarks), id
+        ];
 
-      // Execute Query
-      const result = await pool.query(query, values);
+        console.log("🔍 Data being passed to DB:", JSON.stringify({
+            name, roll_number, lor_check, cv_check, noc_check, decision, registration_id, email, phone, institute, dob, 
+            gender, state, aadhar, branch, topic, period_of_training, email_sent_date, joined, joining_date, 
+            relieving_date, supervising_scientist, certificate_issued_date, remarks, id
+        }, null, 2));
 
-      if (result.rowCount === 0) {
-          return res.status(404).json({ error: "Internship record not found" });
-      }
+        console.log("🚀 Query Values:", values); // Logs the exact array being passed to PostgreSQL
 
-      res.status(200).json({ message: "✅ Internship data updated successfully", data: result.rows[0] });
+        // Execute Query
+        const result = await pool.query(query, values);
 
-  } catch (error) {
-      console.error("❌ Error updating internship form:", error);
-      res.status(500).json({ error: "Internal server error" });
-  }
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "Internship record not found" });
+        }
+
+        // Format the `joined` field to be Yes/No
+        const updatedInternship = result.rows[0];
+        updatedInternship.joined = updatedInternship.joined ? "Yes" : "No";
+
+        res.status(200).json({ message: "✅ Internship data updated successfully", data: updatedInternship });
+
+    } catch (error) {
+        console.error("❌ Error updating internship form:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
+
+
 
 
 //Delete 
