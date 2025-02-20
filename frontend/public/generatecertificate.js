@@ -1,10 +1,15 @@
 function fetchStudents() {
+    showLoading();
     fetch('/api/students')
         .then(response => response.json())
         .then(data => {
             populateStudentsTable(data);
+            hideLoading();
         })
-        .catch(error => console.error('Error fetching students:', error));
+        .catch(error => {
+            handleFetchError(error, "Error fetching students");
+            hideLoading();
+        });
 }
 
 // Function to populate the table with student data
@@ -28,22 +33,32 @@ function populateStudentsTable(data) {
 
 // Function to generate a certificate for a single student
 function generateCertificate(studentId) {
+    showLoading();
     fetch(`/api/generate-certificate/${studentId}`, { method: 'POST' })
         .then(response => response.json())
         .then(data => {
             alert(`Certificate generated for ${data.name}`);
+            hideLoading();
         })
-        .catch(error => console.error('Error generating certificate:', error));
+        .catch(error => {
+            handleFetchError(error, "Error generating certificate");
+            hideLoading();
+        });
 }
 
 // Function to generate certificates for all students
 function generateAllCertificates() {
+    showLoading();
     fetch('/api/generate-all-certificates', { method: 'POST' })
         .then(response => response.json())
         .then(data => {
             alert(`Generated ${data.count} certificates`);
+            hideLoading();
         })
-        .catch(error => console.error('Error generating certificates:', error));
+        .catch(error => {
+            handleFetchError(error, "Error generating certificates");
+            hideLoading();
+        });
 }
 
 // Add event listener for the "Generate All Certificates" button
@@ -52,10 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (generateAllButton) {
         generateAllButton.addEventListener("click", generateAllCertificates);
     }
+    fetchStudents(); 
 });
-
-// Fetch and populate the table on page load
-document.addEventListener("DOMContentLoaded", fetchStudents);
 
 // Periodically update the table (e.g., every 30 seconds)
 setInterval(fetchStudents, 30000);
@@ -79,19 +92,4 @@ function hideLoading() {
     if (loadingIndicator) {
         loadingIndicator.remove();
     }
-}
-
-// Update fetchStudents function to include loading indicator
-function fetchStudents() {
-    showLoading();
-    fetch('/api/students')
-        .then(response => response.json())
-        .then(data => {
-            populateStudentsTable(data);
-            hideLoading();
-        })
-        .catch(error => {
-            handleFetchError(error, "Error fetching students");
-            hideLoading();
-        });
 }

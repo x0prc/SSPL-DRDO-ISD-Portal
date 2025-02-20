@@ -1,30 +1,40 @@
-from fpdf import FPDF
+from PyPDFForm import PdfWrapper
+import sqlite3
 
-def generate_certificate(name, roll_no, institute, branch, topic, duration):
-    pdf = FPDF()
-    pdf.add_page()
+def generate_certificate(student_id):
+    conn = sqlite3.connect('sit_portal.db')
+    cursor = conn.cursor()
     
-    pdf.image("certificate_template.jpeg", x=0, y=0, w=210, h=297)
+    # Fetch student details
+    cursor.execute("SELECT name, roll_no, branch, internship_topic FROM students WHERE id = ?", (student_id,))
+    student = cursor.fetchone()
     
-    # Set font and add details
-    pdf.set_font("Arial", size=12)
+    if not student:
+        return "Student not found"
     
-    pdf.set_xy(50, 100)
-    pdf.cell(0, 10, f"This is to certify that Mr./Ms. {name}", ln=True)
-    pdf.cell(0, 10, f"Student of {institute}, Roll No. {roll_no}", ln=True)
-    pdf.cell(0, 10, f"Branch {branch}, has completed successfully Summer/Winter Internship", ln=True)
-    pdf.cell(0, 10, f"For the topic '{topic}', Duration: {duration}.", ln=True)
+    name, roll_no, branch, internship_topic = student
     
-    # Save PDF
-    filename = f"{name.replace(' ', '_')}_certificate.pdf"
-    pdf.output(filename)
+    # Load the PDF template
+    pdf = PdfWrapper("certificate_template.pdf")
     
-# Example usage
-generate_certificate(
-    name="John Doe",
-    roll_no="12345",
-    institute="IIT Delhi",
-    branch="Computer Science",
-    topic="Machine Learning",
-    duration="4 weeks"
-)
+    # Fill the PDF form
+    filled_pdf = pdf.fill({
+        "Mr./Ms.": name,
+        "Roll No": roll_no,
+        "Branch": branch,
+        "from": "2025-01-01", 
+        "to": "2025-02-28",    
+        "Duration": "2 months", 
+        "Topic of Internship was": internship_topic
+    })
+    
+    # Save the filled PDF
+    output_filename = f"certificate_{student_id}.pdf"
+    with open(output_filename, "wb") as output_file:
+        output_file.write(filled_pdf.read())
+    
+    conn.close()
+    return output_filename
+
+student_id = 123 
+certificate_file = generate_certificate(student_id)
