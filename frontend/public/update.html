@@ -197,183 +197,75 @@
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        async function fetchInternshipData() {
-            try {
-                const response = await fetch('/get-internship-data');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                populateResultsTable(data);
-            } catch (error) {
-                console.error("Error fetching internship data:", error);
-                alert("Failed to fetch internship data. Please try again.");
-            }
+ <script>
+document.getElementById("editForm").addEventListener("submit", async function (e) {
+    e.preventDefault(); // Prevent form from reloading the page
+
+    try {
+        const aadhar = document.getElementById("editAadhar").value;
+        const aadharRegex = /^[0-9]{12}$/;
+        if (aadhar && !aadharRegex.test(aadhar)) {
+            throw new Error("Aadhar number must be exactly 12 digits.");
         }
 
-        function populateResultsTable(data) {
-            const tableBody = document.getElementById('resultsTableBody');
-            tableBody.innerHTML = '';
-        
-            if (data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="10" class="text-center">No internship records found.</td></tr>`;
-                return;
-            }
-        
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.id}</td>
-                    <td>${item.name}</td>
-                    <td>${item.roll_number}</td>
-                    <td>${item.lor_check ? "✔" : "✘"}</td>
-                    <td>${item.cv_check ? "✔" : "✘"}</td>
-                    <td>${item.noc_check ? "✔" : "✘"}</td>
-                    <td>${item.email}</td>
-                    <td>${item.phone}</td>
-                    <td>${item.institute}</td>
-                    <td>
-                        <button class="btn btn-warning" onclick="editEntry(${item.id})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteEntry(${item.id})">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        }
-        
-        function editEntry(id) {
-            fetch(`/get-internship/${id}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Populate the fields with the existing data
-                    document.getElementById("editId").value = data?.id ?? '';
-                    document.getElementById("editName").value = data?.name ?? '';
-                    document.getElementById("editRollNumber").value = data?.roll_number ?? '';
-                    document.getElementById("editLOR").checked = data?.lor_check ?? false;
-                    document.getElementById("editCV").checked = data?.cv_check ?? false;
-                    document.getElementById("editNOC").checked = data?.noc_check ?? false;
-                    document.getElementById("editDecision").value = data?.decision ?? "Pending";
-                    document.getElementById("editRegistrationId").value = data?.registration_id ?? '';
-                    document.getElementById("editEmail").value = data?.email ?? '';
-                    document.getElementById("editPhone").value = data?.phone ?? '';
-                    document.getElementById("editInstitute").value = data?.institute ?? '';
-                    document.getElementById("editDOB").value = data?.dob ?? '';
-                    document.getElementById("editGender").value = data?.gender ?? "Male";
-                    document.getElementById("editState").value = data?.state ?? '';
-                    document.getElementById("editAadhar").value = data?.aadhar ?? '';
-                    document.getElementById("editBranch").value = data?.branch ?? '';
-                    document.getElementById("editTopic").value = data?.topic ?? '';
-                    document.getElementById("editPeriodOfTraining").value = data?.period_of_training ?? '';
-                    document.getElementById("editEmailSentDate").value = data?.email_sent_date ?? '';
-                    document.getElementById("editJoined").checked = data?.joined === true;
-                    document.getElementById("editJoiningDate").value = data?.joining_date ? data.joining_date.split('T')[0] : '';
-                    document.getElementById("editRelievingDate").value = data?.relieving_date ? data.relieving_date.split('T')[0] : '';
-                    document.getElementById("editSupervisingScientist").value = data?.supervising_scientist ?? '';
-                    document.getElementById("editCertificateIssuedDate").value = data?.certificate_issued_date ?? '';
-                    document.getElementById("editRemarks").value = data?.remarks ?? '';
-                    document.getElementById("editRejectionRemarks").value = data?.rejection_remarks ?? '';
-                    
-                    // Show the modal
-                    let modal = new bootstrap.Modal(document.getElementById('editModal'));
-                    modal.show();
-                })
-                .catch(error => {
-                    console.error("🚨 Error fetching internship data for editing:", error);
-                    alert("Error fetching internship data. Please try again.");
-                });
+        let decision = document.getElementById("editDecision").value.toLowerCase();
+        const validDecisions = ["accept", "reject", "pending"];
+        if (!validDecisions.includes(decision)) {
+            throw new Error("Invalid decision value! Please select Accept, Reject, or Pending.");
         }
 
-        async function deleteEntry(id) {
-            if (!confirm("Are you sure you want to delete this record?")) return;
-        
-            try {
-                const response = await fetch(`/delete-internship/${id}`, { method: 'DELETE' });
-        
-                if (!response.ok) throw new Error("Failed to delete internship record");
-        
-                alert("✅ Internship record deleted successfully!");
-                fetchInternshipData(); // Refresh table
-            } catch (error) {
-                console.error("🚨 Error deleting record:", error);
-                alert("Error deleting record. Please try again.");
-            }
-        }
+        const updatedData = {
+            id: document.getElementById("editId").value,
+            name: document.getElementById("editName").value,
+            roll_number: document.getElementById("editRollNumber").value,
+            lor_check: document.getElementById("editLOR").checked,
+            cv_check: document.getElementById("editCV").checked,
+            noc_check: document.getElementById("editNOC").checked,
+            decision: decision,
+            registration_id: document.getElementById("editRegistrationId").value,
+            email: document.getElementById("editEmail").value,
+            phone: document.getElementById("editPhone").value,
+            institute: document.getElementById("editInstitute").value,
+            dob: document.getElementById("editDOB").value,
+            gender: document.getElementById("editGender").value,
+            state: document.getElementById("editState").value,
+            aadhar: document.getElementById("editAadhar").value,
+            branch: document.getElementById("editBranch").value,
+            topic: document.getElementById("editTopic").value,
+            period_of_training: document.getElementById("editPeriodOfTraining").value,
+            email_sent_date: document.getElementById("editEmailSentDate").value,
+            joined: document.getElementById("editJoined").checked,
+            joining_date: document.getElementById("editJoiningDate").value,
+            relieving_date: document.getElementById("editRelievingDate").value,
+            supervising_scientist: document.getElementById("editSupervisingScientist").value,
+            certificate_issued_date: document.getElementById("editCertificateIssuedDate").value,
+            remarks: document.getElementById("editRemarks").value,
+            rejection_remarks: document.getElementById("editRejectionRemarks").value,
+        };
 
-        document.getElementById("editForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-            
-            try {
-                const aadhar = document.getElementById("editAadhar").value;
-                const aadharRegex = /^[0-9]{12}$/;
-                if (aadhar && !aadharRegex.test(aadhar)) {
-                    throw new Error("Aadhar number must be exactly 12 digits.");
-                }
-            
-                let decision = document.getElementById("editDecision").value.toLowerCase();
-                
-                const validDecisions = ["accept", "reject", "pending"];
-                if (!validDecisions.includes(decision)) {
-                    throw new Error("Invalid decision value! Please select Accept, Reject, or Pending.");
-                }
-            
-                const updatedData = {
-                    id: document.getElementById("editId").value,
-                    name: document.getElementById("editName").value,
-                    roll_number: document.getElementById("editRollNumber").value,
-                    lor_check: document.getElementById("editLOR").checked,
-                    cv_check: document.getElementById("editCV").checked,
-                    noc_check: document.getElementById("editNOC").checked,
-                    decision: decision,
-                    registration_id: document.getElementById("editRegistrationId").value,
-                    email: document.getElementById("editEmail").value,
-                    phone: document.getElementById("editPhone").value,
-                    institute: document.getElementById("editInstitute").value,
-                    dob: document.getElementById("editDOB").value,
-                    gender: document.getElementById("editGender").value,
-                    state: document.getElementById("editState").value,
-                    aadhar: document.getElementById("editAadhar").value,
-                    branch: document.getElementById("editBranch").value,
-                    topic: document.getElementById("editTopic").value,
-                    period_of_training: document.getElementById("editPeriodOfTraining").value,
-                    email_sent_date: document.getElementById("editEmailSentDate").value,
-                    joined: document.getElementById("editJoined").checked,
-                    joining_date: document.getElementById("editJoiningDate").value,
-                    relieving_date: document.getElementById("editRelievingDate").value,
-                    supervising_scientist: document.getElementById("editSupervisingScientist").value,
-                    certificate_issued_date: document.getElementById("editCertificateIssuedDate").value,
-                    remarks: document.getElementById("editRemarks").value,
-                    rejection_remarks: document.getElementById("editRejectionRemarks").value,
-                };
-            
-                const response = await fetch(`/update-internship/${updatedData.id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(updatedData)
-                });
-            
-                if (!response.ok) {
-                    throw new Error("Failed to update internship record");
-                }
-            
-                alert("✅ Internship record updated successfully!");
-                await fetchInternshipData();  // Refresh the data after successful update
-                bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();  // Close modal
-            } catch (error) {
-                console.error("🚨 Error updating record:", error);
-                alert(`Error updating record: ${error.message}`);
-            }
+        console.log("📤 Sending Data:", updatedData); // Debugging
+
+        const response = await fetch(`/update-internship/${updatedData.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedData)
         });
 
-        fetchInternshipData();
-    </script>
+        if (!response.ok) {
+            const errorMessage = await response.text(); // Get backend error message
+            throw new Error(`Update failed: ${errorMessage}`);
+        }
+
+        alert("✅ Internship record updated successfully!");
+        await fetchInternshipData();  // Refresh the data after a successful update
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();  // Close modal
+    } catch (error) {
+        console.error("🚨 Error updating record:", error);
+        alert(`❌ Update Failed: ${error.message}`);
+    }
+});
+</script>
+
     </body>
     </html>
     
