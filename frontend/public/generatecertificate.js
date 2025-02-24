@@ -32,19 +32,45 @@ function populateStudentsTable(data) {
 }
 
 // Function to generate a certificate for a single student
+
 function generateCertificate(studentId) {
     showLoading();
+
     fetch(`/api/generate-certificate/${studentId}`, { method: 'POST' })
-        .then(response => response.json())
-        .then(data => {
-            alert(`Certificate generated for ${data.name}`);
+        .then(response => {
+            const contentType = response.headers.get("Content-Type");
+            
+            // Ensure the response is a PDF, else show an error
+            if (contentType !== "application/pdf") {
+                throw new Error("Invalid response format. Expected a PDF file.");
+            }
+
+            return response.blob(); // Convert response to a blob for downloading
+        })
+        .then(blob => {
+            if (blob.size === 0) {
+                throw new Error("Empty PDF file received.");
+            }
+
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `certificate_${studentId}.pdf`; // Set the file name
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
             hideLoading();
+            alert("✅ Certificate generated and downloaded successfully!");
         })
         .catch(error => {
-            handleFetchError(error, "Error generating certificate");
+            console.error("🚨 Error generating certificate:", error);
+            alert("❌ Error generating certificate. Please try again.");
             hideLoading();
         });
 }
+
 
 // Function to generate certificates for all students
 function generateAllCertificates() {
