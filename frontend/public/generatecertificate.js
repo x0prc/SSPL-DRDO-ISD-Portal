@@ -38,14 +38,20 @@ function generateCertificate(studentId) {
 
     fetch(`/api/generate-certificate/${studentId}`, { method: 'POST' })
         .then(response => {
-            const contentType = response.headers.get("Content-Type");
-            
-            // Ensure the response is a PDF, else show an error
-            if (contentType !== "application/pdf") {
+            console.log("Response Status:", response.status);
+            console.log("Content-Type:", response.headers.get("Content-Type"));
+
+            if (!response.ok) {
+                return response.text().then(errorMessage => {
+                    throw new Error(`Server error: ${errorMessage}`);
+                });
+            }
+
+            if (response.headers.get("Content-Type") !== "application/pdf") {
                 throw new Error("Invalid response format. Expected a PDF file.");
             }
 
-            return response.blob(); // Convert response to a blob for downloading
+            return response.blob();
         })
         .then(blob => {
             if (blob.size === 0) {
@@ -55,7 +61,7 @@ function generateCertificate(studentId) {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `certificate_${studentId}.pdf`; // Set the file name
+            a.download = `certificate_${studentId}.pdf`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
@@ -66,10 +72,11 @@ function generateCertificate(studentId) {
         })
         .catch(error => {
             console.error("🚨 Error generating certificate:", error);
-            alert("❌ Error generating certificate. Please try again.");
+            alert(`❌ Error: ${error.message}. Please check with the backend team.`);
             hideLoading();
         });
 }
+
 
 
 // Function to generate certificates for all students
