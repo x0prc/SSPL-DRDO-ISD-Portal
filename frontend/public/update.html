@@ -202,18 +202,21 @@ document.getElementById("editForm").addEventListener("submit", async function (e
     e.preventDefault(); // Prevent form from reloading the page
 
     try {
+        //  Validate Aadhar Number (Exactly 12 digits)
         const aadhar = document.getElementById("editAadhar").value;
         const aadharRegex = /^[0-9]{12}$/;
         if (aadhar && !aadharRegex.test(aadhar)) {
             throw new Error("Aadhar number must be exactly 12 digits.");
         }
 
-        let decision = document.getElementById("editDecision").value.toLowerCase();
-        const validDecisions = ["accept", "reject", "pending"];
+        //  Validate Decision Value
+        const decision = document.getElementById("editDecision").value;
+        const validDecisions = ["Accept", "Reject", "Pending"];
         if (!validDecisions.includes(decision)) {
             throw new Error("Invalid decision value! Please select Accept, Reject, or Pending.");
         }
 
+        //  Prepare Data for Submission
         const updatedData = {
             id: document.getElementById("editId").value,
             name: document.getElementById("editName").value,
@@ -243,27 +246,40 @@ document.getElementById("editForm").addEventListener("submit", async function (e
             rejection_remarks: document.getElementById("editRejectionRemarks").value,
         };
 
-        console.log("📤 Sending Data:", updatedData); // Debugging
+        console.log("📤 Sending Data:", updatedData); // ✅ Debugging Log
 
+        // Send Update Request
         const response = await fetch(`/update-internship/${updatedData.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedData)
         });
 
+        //  Handle Response Errors
         if (!response.ok) {
-            const errorMessage = await response.text(); // Get backend error message
+            const errorMessage = await response.text();
             throw new Error(`Update failed: ${errorMessage}`);
         }
 
+        //  Success Message
         alert("✅ Internship record updated successfully!");
-        await fetchInternshipData();  // Refresh the data after a successful update
-        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();  // Close modal
+
+        // Refresh Data to Show Updated Entry
+        await fetchInternshipData(); 
+
+        //  Close Modal Properly
+        const editModal = document.getElementById('editModal');
+        if (editModal) {
+            const modalInstance = bootstrap.Modal.getInstance(editModal) || new bootstrap.Modal(editModal);
+            modalInstance.hide();
+        }
+
     } catch (error) {
         console.error("🚨 Error updating record:", error);
         alert(`❌ Update Failed: ${error.message}`);
     }
 });
+
 </script>
 
     </body>
