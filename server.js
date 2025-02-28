@@ -339,10 +339,12 @@ app.put('/update-internship/:id', async (req, res) => {
         }
 
         // Ensure boolean values are stored correctly
-        lor_check = req.body.lorCheck === 'on' ? true : false;
-        cv_check = req.body.cvCheck === 'on' ? true : false;
-        noc_check = req.body.nocCheck === 'on' ? true : false;
-        joined = req.body.joined === "true" ? true : false;
+        lor_check = req.body.lor_check ? req.body.lor_check === "true" || req.body.lor_check === true : false;
+        cv_check = req.body.cv_check ? req.body.cv_check === "true" || req.body.cv_check === true : false;
+        noc_check = req.body.noc_check ? req.body.noc_check === "true" || req.body.noc_check === true : false;
+
+
+        joined = req.body.joined === "Yes" ? true : req.body.joined === "No" ? false : null;
 
         // Parse dates correctly
         dob = parseDate(dob);
