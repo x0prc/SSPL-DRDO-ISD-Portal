@@ -135,10 +135,10 @@
                                 <input type="text" class="form-control" id="editInstitute" required>
                                 
                                 <label class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" id="editDOB">
+                                <input type="date" class="form-control" id="editDOB" required>
                                 
                                 <label class="form-label">Gender</label>
-                                <select class="form-control" id="editGender">
+                                <select class="form-control" id="editGender" required>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
@@ -162,10 +162,16 @@
                                 <input type="text" class="form-control" id="editPeriodOfTraining">
                                 
                                 <label class="form-label">Email Sent Date</label>
-                                <input type="date" class="form-control" id="editEmailSentDate">
+                                <input type="date" class="form-control" id="editEmailSentDate" required>
 
                                 <label class="form-label">Joined</label>
-                                <input type="checkbox" class="form-control" id="editJoined">
+                                    <select class="form-control" id="editJoined" required>
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+
+                                
 
                                 <label class="form-label">Joining Date</label>
                                 <input type="date" class="form-control" id="editJoiningDate">
@@ -177,7 +183,7 @@
                                 <input type="text" class="form-control" id="editSupervisingScientist">
 
                                 <label class="form-label">Certificate Issued Date</label>
-                                <input type="date" class="form-control" id="editCertificateIssuedDate">
+                                <input type="date" class="form-control" id="editCertificateIssuedDate" required>
                                 
                                 <label class="form-label">Remarks</label>
                                 <textarea class="form-control" id="editRemarks"></textarea>        
@@ -271,7 +277,7 @@
                     document.getElementById("editTopic").value = data?.topic ?? '';
                     document.getElementById("editPeriodOfTraining").value = data?.period_of_training ?? '';
                     document.getElementById("editEmailSentDate").value = data?.email_sent_date ?? '';
-                    document.getElementById("editJoined").checked = data?.joined === true;
+                    document.getElementById("editJoined").value = data?.joined ? "Yes" : "No";
                     document.getElementById("editJoiningDate").value = data?.joining_date ? data.joining_date.split('T')[0] : '';
                     document.getElementById("editRelievingDate").value = data?.relieving_date ? data.relieving_date.split('T')[0] : '';
                     document.getElementById("editSupervisingScientist").value = data?.supervising_scientist ?? '';
@@ -279,6 +285,10 @@
                     document.getElementById("editRemarks").value = data?.remarks ?? '';
                     document.getElementById("editRejectionRemarks").value = data?.rejection_remarks ?? '';
                     
+
+                    setJoinedValue(data?.joined);
+
+
                     // Show the modal
                     let modal = new bootstrap.Modal(document.getElementById('editModal'));
                     modal.show();
@@ -326,10 +336,10 @@
                     id: document.getElementById("editId").value,
                     name: document.getElementById("editName").value,
                     roll_number: document.getElementById("editRollNumber").value,
-                    lor_check: document.getElementById("editLOR").checked,
-                    cv_check: document.getElementById("editCV").checked,
-                    noc_check: document.getElementById("editNOC").checked,
-                    decision: decision,
+                    lor_check: document.getElementById("editLOR").checked ? true : false,
+                    cv_check: document.getElementById("editCV").checked ? true : false,
+                    noc_check: document.getElementById("editNOC").checked ? true : false,
+                    decision: document.getElementById("editDecision").value,
                     registration_id: document.getElementById("editRegistrationId").value,
                     email: document.getElementById("editEmail").value,
                     phone: document.getElementById("editPhone").value,
@@ -342,14 +352,15 @@
                     topic: document.getElementById("editTopic").value,
                     period_of_training: document.getElementById("editPeriodOfTraining").value,
                     email_sent_date: document.getElementById("editEmailSentDate").value,
-                    joined: document.getElementById("editJoined").checked,
+                    joined: document.getElementById("editJoined").value,
                     joining_date: document.getElementById("editJoiningDate").value,
                     relieving_date: document.getElementById("editRelievingDate").value,
                     supervising_scientist: document.getElementById("editSupervisingScientist").value,
                     certificate_issued_date: document.getElementById("editCertificateIssuedDate").value,
                     remarks: document.getElementById("editRemarks").value,
-                    rejection_remarks: document.getElementById("editRejectionRemarks").value,
+                    rejection_remarks: document.getElementById("editRejectionRemarks").value
                 };
+                
             
                 const response = await fetch(`/update-internship/${updatedData.id}`, {
                     method: "PUT",
@@ -371,6 +382,18 @@
                 alert(`Error updating record: ${error.message}`);
             }
         });
+
+
+        function setJoinedValue(joinedValue) {
+            let joinedDropdown = document.getElementById("editJoined");
+        
+            if (joinedValue === "Yes" || joinedValue === "No") {
+                joinedDropdown.value = joinedValue; // Set dropdown to Yes/No
+            } else {
+                joinedDropdown.value = ""; // Keep empty if NULL
+            }
+        }
+        
 
         fetchInternshipData();
     </script>
