@@ -4,6 +4,7 @@
   "description": "A web application for managing internship applications.",
   "main": "server.js",
   "scripts": {
+    "build": "parcel build ./server.js --out-dir dist",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "client": "npm start --prefix frontend",
