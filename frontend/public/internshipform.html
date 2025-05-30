@@ -12,7 +12,6 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css"
             rel="stylesheet"
         />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
         <link rel="stylesheet" href="./style.css" />
         <link rel="stylesheet" href="sidebar.css" />
         <style>
@@ -30,6 +29,7 @@
                 Solid State Physics Laboratory
             </div>
         </div>
+
         <div class="container-fluid">
             <div class="row">
                 <!-- Sidebar -->
@@ -75,6 +75,7 @@
                         </ul>
                     </div>
                 </nav>
+
                 <!-- Main content -->
                 <main
                     id="main-content"
@@ -87,10 +88,12 @@
                             <h2 class="text-2xl font-bold mb-6 text-center">
                                 SIT Data Form
                             </h2>
+
                             <div
                                 id="errorContainer"
                                 class="mb-4 p-3 bg-danger text-white rounded d-none"
                             ></div>
+
                             <form
                                 id="internshipForm"
                                 class="needs-validation"
@@ -101,41 +104,12 @@
                                     <h3 class="text-xl font-semibold">
                                         Personal Information
                                     </h3>
+
                                     <div class="mb-3">
                                         <label
                                             for="name"
                                             class="form-label required"
-                                            >Year</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="name"
-                                            name="name"
-                                            required
-                                        />
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="name"
-                                            class="form-label required"
-                                            >Sr. No.</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="name"
-                                            name="name"
-                                            required
-                                        />
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="name"
-                                            class="form-label required"
-                                            >Name of Student</label
+                                            >Name</label
                                         >
                                         <input
                                             type="text"
@@ -148,6 +122,7 @@
                                             Please enter your name.
                                         </div>
                                     </div>
+
                                     <div class="mb-3">
                                         <label
                                             for="rollNumber"
@@ -166,6 +141,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!--Checkboxes Section-->
                                 <div class="mb-3">
                                     <div class="checkbox-container">
@@ -218,6 +194,7 @@
                                         </label>
                                     </div>
                                 </div>
+
                                 <!-- Decision Buttons -->
                                 <div class="d-flex justify-content-center mb-4">
                                     <div
@@ -241,6 +218,7 @@
                                         </button>
                                     </div>
                                 </div>
+
                                 <!-- Acceptance Details (initially hidden) -->
                                 <div id="acceptanceDetails" class="mb-4 d-none">
                                     <h3 class="text-xl font-semibold">
@@ -299,20 +277,6 @@
                                             class="form-control"
                                             id="institute"
                                             name="institute"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="institute"
-                                            class="form-label required"
-                                            >Affiliation</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="affiliation"
-                                            name="affiliation"
                                             required
                                         />
                                     </div>
@@ -396,23 +360,9 @@
                                     </div>
                                     <div class="mb-3">
                                         <label
-                                            for="branch"
-                                            class="form-label required"
-                                            >Field/Branch of Engineering</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="field/branch"
-                                            name="field/branch"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
                                             for="topic"
                                             class="form-label required"
-                                            >Topic Name</label
+                                            >Topic</label
                                         >
                                         <input
                                             type="text"
@@ -422,6 +372,7 @@
                                             required
                                         />
                                     </div>
+
                                     <!-- Removed 'required' from these fields -->
                                     <div class="mb-3">
                                         <label
@@ -437,6 +388,7 @@
                                             required
                                         />
                                     </div>
+
                                     <!-- Email Sent Date -->
                                     <div class="mb-3">
                                         <label
@@ -452,6 +404,7 @@
                                             required
                                         />
                                     </div>
+
                                     <!-- Joined -->
                                     <div class="mb-3">
                                         <label
@@ -470,6 +423,7 @@
                                             <option value="false">No</option>
                                         </select>
                                     </div>
+
                                     <!-- Joining Date -->
                                     <div class="mb-3">
                                         <label
@@ -485,6 +439,7 @@
                                             required
                                         />
                                     </div>
+
                                     <!-- Relieving Date (not mandatory anymore) -->
                                     <div class="mb-3">
                                         <label
@@ -499,12 +454,13 @@
                                             name="relievingDate"
                                         />
                                     </div>
+
                                     <!-- Supervising Scientist -->
                                     <div class="mb-3">
                                         <label
                                             for="supervisingScientist"
                                             class="form-label required"
-                                            >Scientist Name</label
+                                            >Supervising Scientist</label
                                         >
                                         <input
                                             type="text"
@@ -514,150 +470,7 @@
                                             required
                                         />
                                     </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Division"
-                                            class="form-label required"
-                                            >Division</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="Division"
-                                            name="Division"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="DivisionofLab"
-                                            class="form-label required"
-                                            >Division of the Lab with which
-                                            attached</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="DivisionofLab"
-                                            name="DivisionofLab"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="NameofScientists"
-                                            class="form-label required"
-                                            >Name of the Scientists &
-                                            designation with whom
-                                            attached</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="NameofScientists"
-                                            name="NameofScientists"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Division"
-                                            class="form-label required"
-                                            >Division</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="Division"
-                                            name="Divison"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Scientist Name"
-                                            class="form-label required"
-                                            >Scientist Name</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="ScientistName"
-                                            name="ScientistName"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Designation"
-                                            class="form-label required"
-                                            >Designation</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="Designation"
-                                            name="Designation"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Periods of attachment with date"
-                                            class="form-label required"
-                                            >Periods of attachment with
-                                            Date</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="PeriodsofAttached"
-                                            name="PeriodsofAttached"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Weeks"
-                                            class="form-label required"
-                                            >Time in Weeks</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="Weeks"
-                                            name="Weeks"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="Mode"
-                                            class="form-label required"
-                                            >Mode of training</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="Mode"
-                                            name="Mode"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label
-                                            for="TrainingPeriods"
-                                            class="form-label required"
-                                            >Training Periods</label
-                                        >
-                                        <input
-                                            type="text"
-                                            class="form-control"
-                                            id="TrainingPeriods"
-                                            name="TrainingPeriods"
-                                            required
-                                        />
-                                    </div>
+
                                     <!-- Certificate Issued Date (not mandatory anymore) -->
                                     <div class="mb-3">
                                         <label
@@ -672,6 +485,7 @@
                                             name="certificateIssuedDate"
                                         />
                                     </div>
+
                                     <!-- Remarks (not mandatory anymore) -->
                                     <div class="mb-3">
                                         <label for="remarks" class="form-label"
@@ -685,6 +499,7 @@
                                         ></textarea>
                                     </div>
                                 </div>
+
                                 <!-- Rejection Details (initially hidden) -->
                                 <div id="rejectionDetails" class="mb-4 d-none">
                                     <h3 class="text-xl font-semibold">
@@ -705,6 +520,7 @@
                                         ></textarea>
                                     </div>
                                 </div>
+
                                 <div class="d-flex justify-content-end">
                                     <button
                                         type="button"
@@ -721,19 +537,13 @@
                                         Submit
                                     </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    class="btn btn-success"
-                                    id="exportButton"
-                                >
-                                    Export to Excel
-                                </button>
                             </form>
                         </div>
                     </div>
                 </main>
             </div>
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             // State management
@@ -790,45 +600,45 @@
                 const previewData = Object.fromEntries(formData.entries());
 
                 let previewContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Form Preview</title>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-      </head>
-      <body>
-      <div class="container mt-5">
-          <h2 class="mb-4">Form Preview</h2>
-          <table class="table table-bordered">
-              <thead>
-                  <tr>
-                      <th>Field</th>
-                      <th>Value</th>
-                  </tr>
-              </thead>
-              <tbody>
-      `;
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Form Preview</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-5">
+                <h2 class="mb-4">Form Preview</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    `;
 
                 for (const [key, value] of Object.entries(previewData)) {
                     if (value) {
                         previewContent += `
-          <tr>
-              <td>${key}</td>
-              <td>${value}</td>
-          </tr>
-      `;
+                <tr>
+                    <td>${key}</td>
+                    <td>${value}</td>
+                </tr>
+            `;
                     }
                 }
 
                 previewContent += `
-              </tbody>
-          </table>
-      </div>
-      </body>
-      </html>
-      `;
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+    `;
 
                 const previewWindow = window.open(
                     "",
@@ -919,24 +729,48 @@
                         alert("Error submitting form! Check the console.");
                     }
                 });
-            document
-                .getElementById("exportButton")
-                .addEventListener("click", function () {
-                    const formData = new FormData(
-                        document.getElementById("internshipForm"),
-                    );
-                    const data = [Object.fromEntries(formData.entries())];
 
-                    const worksheet = XLSX.utils.json_to_sheet(data);
-                    const workbook = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(
-                        workbook,
-                        worksheet,
-                        "Internship Data",
-                    );
+            <button onclick="exportToExcel()">Export to Excel</button>
 
-                    XLSX.writeFile(workbook, "InternshipData.xlsx");
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+            <script>
+            function exportToExcel() {
+                const table = document.querySelector('table'); // Adjust selector if multiple tables
+                const headers = [
+                    "Year", "Sr. No.", "Name of Student", "Gender", "Affiliation", "State", "Branch",
+                    "Branch Category", "Field/Branch of Engineering", "Division", "Scientist Name", "Designation",
+                    "Periods of attachment with date", "Time in Weeks", "Mode of Training", "Training Periods",
+                    "Topic Name", "Certificate Issued", "Certificate Issued Date"
+                ];
+
+                const rows = Array.from(table.querySelectorAll('tr')).map(row =>
+                    Array.from(row.querySelectorAll('td, th')).map(cell => cell.innerText.trim())
+                );
+
+                const headerRow = rows[0];
+                const columnIndexes = headers.map(h => headerRow.indexOf(h)).filter(i => i !== -1);
+
+                const selectedData = rows.slice(1).map(row =>
+                    columnIndexes.map(i => row[i] || '')
+                );
+
+                // Remove duplicate rows
+                const seen = new Set();
+                const uniqueData = selectedData.filter(row => {
+                    const key = row.join('|');
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
                 });
+
+                const worksheetData = [headers, ...uniqueData];
+                const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Export");
+
+                XLSX.writeFile(workbook, "InternshipData.xlsx");
+            }
+            </script>
         </script>
     </body>
 </html>
